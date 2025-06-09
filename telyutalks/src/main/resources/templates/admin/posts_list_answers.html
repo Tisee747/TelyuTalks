@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: layout(pageTitle='All Answers', content=~{::content})}">
+<body>
+<th:block th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>All Answers</h1>
+        <form th:action="@{/admin/posts/answers}" method="get" class="d-flex w-50">
+            <input class="form-control me-2" type="search" name="query" placeholder="Search by content..." th:value="${query}">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+    </div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead><tr><th>ID</th><th>Content Snippet</th><th>Author</th><th>Original Question</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    <tr th:each="answer : ${answers}">
+                        <td th:text="${answer.id}"></td>
+                        <td th:text="${#strings.abbreviate(answer.content, 60)}"></td>
+                        <td th:text="${answer.author?.nama}"></td>
+                        <td><a th:href="@{/admin/posts/view/{id}(id=${answer.question.id})}" target="_blank" th:text="'#' + ${answer.question.id}"></a></td>
+                        <td class="text-end">
+                            <form th:action="@{/admin/answers/delete/{id}(id=${answer.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                <input type="hidden" name="returnTo" value="list">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

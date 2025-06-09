@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)"
+      th:replace="~{admin/layout :: layout(pageTitle='Dashboard', content=~{::content})}">
+<body>
+    <th:block th:fragment="content">
+        <h1 class="mb-4">Dashboard</h1>
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card shadow h-100 py-2 card-square">
+                    <div class="card-body card-body-centered">
+                        <div class="text-center">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Mahasiswa</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${studentCount}">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card shadow h-100 py-2 card-square">
+                    <div class="card-body card-body-centered">
+                        <div class="text-center">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Dosen</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${lecturerCount}">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card shadow h-100 py-2 card-square">
+                    <div class="card-body card-body-centered">
+                        <div class="text-center">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Pertanyaan</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${questionCount}">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card shadow h-100 py-2 card-square">
+                    <div class="card-body card-body-centered">
+                        <div class="text-center">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Total Laporan</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${reportCount}">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-bold text-primary">Statistik Konten</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="myBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+
+            // Menjalankan kode hanya setelah seluruh halaman HTML selesai dimuat
+            document.addEventListener('DOMContentLoaded', (event) => {
+                
+                // Mengambil data dari Model Spring Boot
+                const studentCount = /*[[${studentCount}]]*/ 0;
+                const lecturerCount = /*[[${lecturerCount}]]*/ 0;
+                const questionCount = /*[[${questionCount}]]*/ 0;
+                const reportCount = /*[[${reportCount}]]*/ 0;
+                
+                // Pengaturan Grafik
+                const ctx = document.getElementById('myBarChart');
+                if (ctx) { // Menambahkan pengecekan jika elemen canvas ada
+                    new Chart(ctx, {
+                        type: 'bar', // Jenis grafik
+                        data: {
+                            labels: ['Mahasiswa', 'Dosen', 'Pertanyaan', 'Laporan'], // Label untuk sumbu X
+                            datasets: [{
+                                label: 'Jumlah',
+                                data: [studentCount, lecturerCount, questionCount, reportCount], // Data untuk setiap bar
+                                backgroundColor: [
+                                    'rgba(54, 162, 235, 0.6)',
+                                    'rgba(75, 192, 192, 0.6)',
+                                    'rgba(255, 206, 86, 0.6)',
+                                    'rgba(255, 99, 132, 0.6)'
+                                ],
+                                borderColor: [
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(255, 99, 132, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false // Menyembunyikan legenda karena sudah jelas
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
+            /*]]>*/
+        </script>
+    </th:block>
+</body>
+</html>

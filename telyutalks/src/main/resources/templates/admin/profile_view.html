@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: layout(pageTitle='User Profile', content=~{::content})}">
+<body>
+<th:block th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>User Profile</h1>
+        <a th:href="@{/admin/accounts}" class="btn btn-secondary">← Back to All Accounts</a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${user.nama}">User Name</h5>
+            <p class="card-text">
+                <strong>ID:</strong> <span th:text="${user.id}"></span><br>
+                <strong>Email:</strong> <span th:text="${user.email}"></span><br>
+                <strong>Role:</strong> <span th:text="${user.getRole()}" th:classappend="${user.getRole() == 'Admin' ? 'badge bg-danger' : (user.getRole() == 'Student' ? 'badge bg-primary' : 'badge bg-success')}"></span>
+            </p>
+            </div>
+    </div>
+</th:block>
+</body>
+</html>

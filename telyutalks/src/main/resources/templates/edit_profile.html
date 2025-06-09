@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" 
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(pageTitle='Edit Profile', content=~{::content}, showFooter=true)}">
+
+<th:block th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>Edit Your Profile</h2>
+            <p class="text-muted">Perbarui informasi profil Anda. Email dan username tidak dapat diubah.</p>
+            <hr>
+            <form th:action="@{/profile/edit}" method="post">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="nama" class="form-label">Nama Lengkap</label>
+                        <input type="text" id="nama" name="nama" class="form-control" th:value="${user.nama}" required>
+                    </div>
+
+                    <!-- Field Khusus Mahasiswa -->
+                    <th:block th:if="${user?.getRole() == 'Student'}">
+                        <div class="col-md-6">
+                            <label for="studentFakultas" class="form-label">Fakultas</label>
+                            <select id="studentFakultas" name="fakultas" class="form-select" required>
+                                <!-- Thymeleaf akan mengisi dan memilih opsi yang benar di sini -->
+                                <option th:each="fakultasEntry : ${prodiData}"
+                                        th:value="${fakultasEntry.key}"
+                                        th:text="${fakultasEntry.key}"
+                                        th:selected="${fakultasEntry.key == user.fakultas}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="studentProdi" class="form-label">Program Studi</label>
+                            <select id="studentProdi" name="programStudi" class="form-select" required>
+                                <!-- Opsi akan diisi oleh JavaScript -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="angkatan" class="form-label">Angkatan</label>
+                            <input type="text" id="angkatan" name="angkatan" class="form-control" th:value="${user.angkatan}" required>
+                        </div>
+                    </th:block>
+
+                    <!-- Field Khusus Dosen -->
+                    <th:block th:if="${user?.getRole() == 'Lecturer'}">
+                        <div class="col-md-6">
+                            <label for="nidn" class="form-label">NIDN/NIDK</label>
+                            <input type="text" id="nidn" name="nidn" class="form-control" th:value="${user.nidn}" required>
+                        </div>
+                        <div class="col-md-6">
+                           <label for="lecturerFakultas" class="form-label">Fakultas</label>
+                           <select id="lecturerFakultas" name="fakultas" class="form-select" required>
+                               <option th:each="fakultasEntry : ${prodiData}"
+                                       th:value="${fakultasEntry.key}"
+                                       th:text="${fakultasEntry.key}"
+                                       th:selected="${fakultasEntry.key == user.fakultas}"></option>
+                           </select>
+                        </div>
+                    </th:block>
+                </div>
+                
+                <button type="submit" class="btn btn-primary mt-4">Save Changes</button>
+                <a th:href="@{/profile}" class="btn btn-secondary mt-4">Cancel</a>
+            </form>
+
+            <hr class="my-4">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">Danger Zone</div>
+                <div class="card-body">
+                    <h5 class="card-title text-danger">Delete This Account</h5>
+                    <p class="card-text">Setelah Anda menghapus akun, tidak ada jalan untuk kembali.</p>
+                    <form th:action="@{/profile/delete}" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun Anda?');">
+                        <button type="submit" class="btn btn-danger">Delete My Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const prodiData = /*[[${prodiData}]]*/ {};
+        const userProdi = /*[[${user instanceof T(com.telyutalks.telyutalks.model.Student) ? user.programStudi : null}]]*/ null;
+        
+        const fakultasSelect = document.getElementById('studentFakultas');
+        const prodiSelect = document.getElementById('studentProdi');
+
+        if (fakultasSelect) {
+            const updateProdiOptions = () => {
+                const selectedFakultas = fakultasSelect.value;
+                prodiSelect.innerHTML = ''; // Hapus opsi lama
+                
+                const prodiList = prodiData[selectedFakultas];
+                if (prodiList) {
+                    prodiList.forEach(prodi => {
+                        const option = new Option(prodi, prodi);
+                        if (prodi === userProdi) {
+                            option.selected = true;
+                        }
+                        prodiSelect.add(option);
+                    });
+                }
+            };
+            
+            fakultasSelect.addEventListener('change', updateProdiOptions);
+            updateProdiOptions(); // Panggil sekali untuk mengisi data awal
+        }
+    });
+    </script>
+</th:block>
+
+</html>

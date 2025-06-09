@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)">
+<div th:replace="~{layout :: layout(pageTitle='Search Results', content=~{::content})}">
+<main th:fragment="content">
+    <h1 class="mb-4">
+        Search Results for: <span class="fw-normal" th:text="${query}"></span>
+    </h1>
+
+    <div th:if="${#lists.isEmpty(results)}" class="alert alert-warning">
+        No questions found matching your search query.
+    </div>
+
+    <div th:if="!${#lists.isEmpty(results)}" class="list-group">
+        <a th:each="question : ${results}" th:href="@{/question/{id}(id=${question.id})}" class="list-group-item list-group-item-action">
+            <div class="d-flex align-items-center mb-2">
+                <strong class="me-2" th:text="${question.author.nama}">Nama Penanya</strong>
+                <span th:if="${question.author instanceof T(com.telyutalks.telyutalks.model.Student)}" class="badge rounded-pill bg-primary me-2">Student</span>
+                <span th:if="${question.author instanceof T(com.telyutalks.telyutalks.model.Lecturer)}" class="badge rounded-pill bg-success me-2">Lecturer</span>
+                <small class="text-muted" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></small>
+            </div>
+            <p class="mb-1" th:text="${#strings.abbreviate(question.content, 150)}">
+            </p>
+        </a>
+    </div>
+</main>
+</div>
+</html>

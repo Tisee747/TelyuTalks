@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" 
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(pageTitle='Ask a Question', content=~{::content}, showFooter=true)}">
+
+<th:block th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>Ask a Public Question</h2><hr>
+            <div class="card"><div class="card-body">
+                <form th:action="@{/ask}" method="post">
+                    <div class="mb-3">
+                        <label for="content" class="form-label fw-bold">What is your question?</label>
+                        <small class="d-block text-muted mb-1">Tulis pertanyaan Anda dengan jelas dan ringkas.</small>
+                        <textarea id="content" name="content" class="form-control" rows="10" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Your Question</button>
+                </form>
+            </div></div>
+        </div>
+    </div>
+</th:block>
+
+</html>

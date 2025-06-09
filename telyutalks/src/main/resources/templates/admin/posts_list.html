@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)"
+      th:replace="~{admin/layout :: layout(pageTitle='All Questions', content=~{::content})}">
+<body>
+<th:block th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>All Questions</h1>
+        <form th:action="@{/admin/posts/questions}" method="get" class="d-flex w-50">
+            <input class="form-control me-2" type="search" name="query" placeholder="Search by content..." th:value="${query}">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+    </div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead><tr><th>ID</th><th>Content Snippet</th><th>Author</th><th>Created At</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    <tr th:each="question : ${questions}">
+                        <td th:text="${question.id}"></td>
+                        <td th:text="${#strings.abbreviate(question.content, 60)}"></td>
+                        <td><a th:href="@{/admin/profile/{id}(id=${question.author.id})}" th:text="${question.author.nama}"></a></td>
+                        <td th:text="${#temporals.format(question.createdAt, 'dd MMM yy, HH:mm')}"></td>
+                        <td class="text-end"><a th:href="@{/admin/posts/view/{id}(id=${question.id})}" class="btn btn-sm btn-info">View Details</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

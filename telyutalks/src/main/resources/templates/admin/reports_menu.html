@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)"
+      th:replace="~{admin/layout :: layout(pageTitle='Reports Management', content=~{::content})}">
+<body>
+<th:block th:fragment="content">
+    <h1 class="mb-4">Reports Management</h1>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column justify-content-center p-4">
+                    <h2 class="card-title">Reported Questions</h2>
+                    <p class="display-4 fw-bold" th:text="${questionReportCount}"></p>
+                    <a th:href="@{/admin/reports/list(type='question')}" class="btn btn-warning mt-auto">View Question Reports</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column justify-content-center p-4">
+                    <h2 class="card-title">Reported Answers</h2>
+                    <p class="display-4 fw-bold" th:text="${answerReportCount}"></p>
+                    <a th:href="@{/admin/reports/list(type='answer')}" class="btn btn-warning mt-auto">View Answer Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
