@@ -1,27 +1,67 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)">
-<div th:replace="~{layout :: layout(pageTitle='Search Results', content=~{::content})}">
+<html lang="en" 
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(pageTitle='Search Results', content=~{::content}, showFooter=true)}">
 <main th:fragment="content">
-    <h1 class="mb-4">
-        Search Results for: <span class="fw-normal" th:text="${query}"></span>
+    <style>
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        .page-title .query {
+            color: var(--telyu-red);
+        }
+        .question-card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .question-card-link .question-item {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            background: var(--telyu-white);
+            border: 1px solid var(--telyu-border-color);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .question-card-link:hover .question-item {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.07);
+        }
+        .question-author {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .question-author .author-icon { font-size: 18px; color: var(--telyu-red); margin-right: 8px; }
+        .question-author .author-name { font-weight: 600; }
+        .question-author .time { color: #6c757d; margin-left: 8px; }
+        .question-content { color: var(--telyu-black); }
+    </style>
+
+    <h1 class="page-title">
+        Hasil Pencarian untuk: <span class="query" th:text="${query}"></span>
     </h1>
 
     <div th:if="${#lists.isEmpty(results)}" class="alert alert-warning">
-        No questions found matching your search query.
+        Tidak ada pertanyaan yang cocok dengan pencarian Anda.
     </div>
 
-    <div th:if="!${#lists.isEmpty(results)}" class="list-group">
-        <a th:each="question : ${results}" th:href="@{/question/{id}(id=${question.id})}" class="list-group-item list-group-item-action">
-            <div class="d-flex align-items-center mb-2">
-                <strong class="me-2" th:text="${question.author.nama}">Nama Penanya</strong>
-                <span th:if="${question.author instanceof T(com.telyutalks.telyutalks.model.Student)}" class="badge rounded-pill bg-primary me-2">Student</span>
-                <span th:if="${question.author instanceof T(com.telyutalks.telyutalks.model.Lecturer)}" class="badge rounded-pill bg-success me-2">Lecturer</span>
-                <small class="text-muted" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></small>
+    <div th:if="!${#lists.isEmpty(results)}" class="question-list">
+        <a th:each="question : ${results}" th:href="@{/question/{id}(id=${question.id})}" class="question-card-link">
+            <div class="question-item">
+                <div class="question-author">
+                    <i class="bi bi-person-circle author-icon"></i>
+                    <span class="author-name" th:if="${question.author}" th:text="${question.author.nama}">Nama Penanya</span>
+                    <span class="author-name" th:unless="${question.author}">[Pengguna Dihapus]</span>
+                    <span th:if="${question.author?.role == 'Student'}" class="badge rounded-pill badge-mahasiswa ms-2">Mahasiswa</span>
+                    <span th:if="${question.author?.role == 'Lecturer'}" class="badge rounded-pill badge-dosen ms-2">Dosen</span>
+                    <span class="time" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></span>
+                </div>
+                <p class="question-content" th:text="${#strings.abbreviate(question.content, 250)}"></p>
             </div>
-            <p class="mb-1" th:text="${#strings.abbreviate(question.content, 150)}">
-            </p>
         </a>
     </div>
 </main>
-</div>
 </html>

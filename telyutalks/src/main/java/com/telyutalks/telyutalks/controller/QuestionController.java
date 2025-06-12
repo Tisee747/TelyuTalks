@@ -3,7 +3,6 @@ package com.telyutalks.telyutalks.controller;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -57,10 +56,6 @@ public class QuestionController {
     @GetMapping("/question/{id}/edit")
     public String showEditQuestionForm(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Question question = questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Question not found"));
-        // ***** PENGECEKAN KEAMANAN MANUAL *****
-        if (!question.getAuthor().getUsername().equals(userDetails.getUsername())) {
-            throw new AccessDeniedException("403 Forbidden");
-        }
         model.addAttribute("question", question);
         return "edit_question";
     }
@@ -68,10 +63,6 @@ public class QuestionController {
     @PostMapping("/question/{id}/edit")
     public String processEditQuestion(@PathVariable Long id, @RequestParam String content, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         Question question = questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Question not found"));
-        // ***** PENGECEKAN KEAMANAN MANUAL *****
-        if (!question.getAuthor().getUsername().equals(userDetails.getUsername())) {
-            throw new AccessDeniedException("403 Forbidden");
-        }
         question.setContent(content);
         questionRepository.save(question);
         redirectAttributes.addFlashAttribute("successMessage", "Question updated successfully.");
@@ -80,11 +71,6 @@ public class QuestionController {
 
     @PostMapping("/question/{id}/delete")
     public String deleteQuestion(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
-        Question question = questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Question not found"));
-        // ***** PENGECEKAN KEAMANAN MANUAL *****
-        if (!question.getAuthor().getUsername().equals(userDetails.getUsername())) {
-            throw new AccessDeniedException("403 Forbidden");
-        }
         questionRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Your question has been deleted.");
         return "redirect:/";

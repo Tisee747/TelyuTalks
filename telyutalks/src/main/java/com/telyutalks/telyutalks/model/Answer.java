@@ -27,7 +27,7 @@ public class Answer {
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
 
-    // --- GETTERS AND SETTERS ---
+    // GETTERS SETTERS
     
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

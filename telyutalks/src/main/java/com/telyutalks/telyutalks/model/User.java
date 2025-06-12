@@ -46,7 +46,7 @@ public abstract class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
 
-    // Getters and Setters for common fields
+    // Getters Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNama() { return nama; }

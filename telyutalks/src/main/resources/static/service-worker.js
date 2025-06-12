@@ -1,10 +1,10 @@
 const CACHE_NAME = 'telyutalks-cache-v1';
 const STATIC_ASSETS = [
     '/',
-    '/layout.html', // You might need to adjust paths based on your final setup
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',
-    '/css/style.css', // Example, if you have a custom css file
+    'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css',
+    '/images/logo-telyutalks.png',
     '/icons/icon-192x192.png',
     '/icons/icon-512x512.png'
 ];

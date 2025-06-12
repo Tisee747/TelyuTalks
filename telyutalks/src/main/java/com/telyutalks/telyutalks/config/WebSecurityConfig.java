@@ -22,8 +22,8 @@ public class WebSecurityConfig {
         http
             .securityMatcher("/admin/**") // Hanya berlaku untuk URL yang diawali /admin/
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/admin/login").permitAll() 
-                // Amankan semua halaman admin lainnya.
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/service-worker.js", "/manifest.json", "/icons/**").permitAll()
+                .requestMatchers("/admin/login  ").permitAll() 
                 .anyRequest().hasRole("ADMIN")
             )
             .formLogin(form -> form
@@ -53,7 +53,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/question/{id}").permitAll()
                 .requestMatchers(
                     "/", "/register/**", "/search", "/api/**", 
-                    "/css/**", "/js/**", "/service-worker.js", "/manifest.json"
+                    "/css/**", "/js/**", "/images/**", "/service-worker.js", "/manifest.json", "/icons/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

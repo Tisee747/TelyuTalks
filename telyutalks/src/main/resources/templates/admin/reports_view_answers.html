@@ -1,0 +1,37 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout_admin :: layout(pageTitle='View Answer Report', content=~{::content})}">
+<body>
+<th:block th:fragment="content">
+    <a th:href="@{/admin/reports/list(type='answer')}" class="btn btn-secondary mb-3">← Back to Answer Reports</a>
+    <h2 class="mb-3">Viewing Report for Answer</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Question
+        </div>
+        <div class="card-body">
+            <p th:text="${question.content}"></p>
+            <small class="text-muted">Asked by <span th:text="${question.author?.nama}"></span></small>
+        </div>
+    </div>
+
+    <h5>Reported Answer</h5>
+    <div class="card border-warning mb-2">
+        <div class="card-body bg-light">
+             <div class="alert alert-warning mb-3">
+                <strong>Report Details:</strong><br>
+                - Reason: <span th:text="${report.reason}"></span><br>
+                - Reporter: <span th:text="${report.reporter?.nama}"></span>
+            </div>
+            <p th:text="${reportedAnswer.content}"></p>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted" th:text="'Answered by ' + ${reportedAnswer.author?.nama}"></small>
+                <form th:action="@{/admin/answers/delete/{id}(id=${reportedAnswer.id})}" method="post" onsubmit="return confirm('Delete this answer?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete Answer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

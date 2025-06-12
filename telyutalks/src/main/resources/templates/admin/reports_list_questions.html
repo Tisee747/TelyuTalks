@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)"
+      th:replace="~{admin/layout_admin :: layout(pageTitle='Question Reports', content=~{::content})}">
+<body>
+<th:block th:fragment="content">
+    <a th:href="@{/admin/reports}" class="btn btn-secondary mb-3">← Back to Report Menu</a>
+    <h1 class="mb-4">Reported Questions</h1>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead><tr><th>Report ID</th><th>Question ID</th><th>Reason</th><th>Reported By</th><th>Date</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    <tr th:each="report : ${reports}" th:classappend="${report.status.name() == 'RESOLVED' ? 'table-light text-muted' : ''}">
+                        <td th:text="${report.id}"></td>
+                        <td th:text="${report.postId}"></td>
+                        <td th:text="${report.reason}"></td>
+                        <td th:text="${report.reporter?.username}"></td>
+                        <td th:text="${#temporals.format(report.createdAt, 'dd MMM yy, HH:mm')}"></td>
+                        <td><span th:text="${report.status.name()}" th:classappend="${report.status.name() == 'PENDING' ? 'badge bg-danger' : 'badge bg-secondary'}"></span></td>
+                        <td class="text-end">
+                            <a th:href="@{/admin/reports/view/{id}(id=${report.id})}" class="btn btn-sm btn-outline-info">View Report</a>
+                            <form th:if="${report.status.name() == 'PENDING'}" th:action="@{/admin/reports/resolve/{id}(id=${report.id})}" method="post" class="d-inline"><button type="submit" class="btn btn-sm btn-success">Resolve</button></form>
+                            <form th:action="@{/admin/reports/delete/{id}(id=${report.id})}" method="post" class="d-inline" onsubmit="return confirm('Delete this report entry?');"><button type="submit" class="btn btn-sm btn-outline-danger">Delete</button></form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(reports)}"><td colspan="7" class="text-center p-4">No question reports found.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

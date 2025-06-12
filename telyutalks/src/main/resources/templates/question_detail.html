@@ -5,104 +5,195 @@
       th:replace="~{layout :: layout(pageTitle='Question Detail', content=~{::content}, showFooter=true)}">
 
 <th:block th:fragment="content">
+    <style>
+        .question-main-card, .answers-card {
+            padding: 32px;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .author-info .author-icon {
+            font-size: 24px;
+            color: var(--telyu-red);
+            margin-right: 10px;
+        }
+        .author-info .author-name { font-weight: 600; }
+        .author-info .time { color: #6c757d; margin-left: 8px; }
+
+        .question-content-full {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            white-space: pre-wrap; 
+        }
+        .report-btn {
+            font-size: 12px;
+            padding: 4px 10px;
+        }
+
+        .answers-card h5 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .answer-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--telyu-border-color);
+        }
+        .answer-item:last-child { border-bottom: none; }
+        .answer-item p { white-space: pre-wrap; margin-top: 10px; }
+
+        #answerModal .modal-content, #reportModal .modal-content {
+            border-radius: 16px;
+            border: none;
+        }
+        #answerModal .modal-body, #reportModal .modal-body {
+            padding: 12px;
+        }
+        .answer-textarea {
+            width: 100%;
+            min-height: 300px;
+            border-radius: 16px;
+            border: 1px solid var(--telyu-border-color);
+            padding: 20px;
+        }
+        .report-reason { margin-bottom: 1rem; }
+        .report-reason input[type="radio"] { display: none; }
+        .report-reason label {
+            display: block;
+            padding: 15px 20px;
+            border: 1px solid var(--telyu-border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .report-reason input[type="radio"]:checked + label {
+            background-color: #fde8e7;
+            border-color: var(--telyu-red);
+            font-weight: 600;
+        }
+
+    </style>
+
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div> 
-    <!-- Bagian Pertanyaan (Read-Only) -->
-    <div class="mb-4">
-        <div class="d-flex justify-content-between align-items-start">
-             <div>
-                <div class="d-flex align-items-center mb-2">
-                    <strong class="me-2" th:if="${question.author}" th:text="${question.author.nama}">Nama Penanya</strong>
-                    <strong class="me-2" th:unless="${question.author}">[Pengguna Dihapus]</strong>
-                    <span th:if="${question.author?.getRole() == 'Student'}" class="badge rounded-pill bg-primary me-2">Student</span>
-                <span th:if="${question.author?.getRole() == 'Lecturer'}" class="badge rounded-pill bg-success me-2">Lecturer</span>
-                    <small class="text-muted" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></small>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card-custom question-main-card mb-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="author-info">
+                        <i class="bi bi-person-circle author-icon"></i>
+                        <div>
+                            <span class="author-name" th:if="${question.author}" th:text="${question.author.nama}">Nama Penanya</span>
+                            <span class="author-name" th:unless="${question.author}">[Pengguna Dihapus]</span>
+                            <span th:if="${question.author?.role == 'Student'}" class="badge rounded-pill badge-mahasiswa ms-2">Mahasiswa</span>
+                            <span th:if="${question.author?.role == 'Lecturer'}" class="badge rounded-pill badge-dosen ms-2">Dosen</span>
+                            <small class="time" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></small>
+                        </div>
+                    </div>
+                    <button sec:authorize="isAuthenticated()" type="button" class="btn btn-outline report-btn" th:data-post-type="'QUESTION'" th:data-post-id="${question.id}">
+                        <i class="bi bi-flag"></i> Report
+                    </button>
                 </div>
-             </div>
-             <button sec:authorize="isAuthenticated()" type="button" class="btn btn-sm btn-outline-danger report-btn" 
-                     th:data-post-type="'QUESTION'" th:data-post-id="${question.id}">
-                 Report
-             </button>
+                <hr class="mt-0">
+                <div class="question-content-full" th:text="${question.content}"></div>
+            </div>
+
+            <div class="card-custom answers-card">
+                <h5 th:text="${question.answers != null ? question.answers.size() : 0} + ' Jawaban'"></h5>
+                <hr>
+                <div th:if="${question.answers != null}" th:each="answer : ${question.answers}" class="answer-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="author-info">
+                             <i class="bi bi-person-circle author-icon"></i>
+                             <div>
+                                 <strong class="author-name" th:if="${answer.author}" th:text="${answer.author.nama}"></strong>
+                                 <strong class="author-name" th:unless="${answer.author}">[Pengguna Dihapus]</strong>
+                                 <span th:if="${answer.author?.role == 'Student'}" class="badge rounded-pill badge-mahasiswa ms-2">Mahasiswa</span>
+                                 <span th:if="${answer.author?.role == 'Lecturer'}" class="badge rounded-pill badge-dosen ms-2">Dosen</span>
+                                 <small class="time" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(answer.createdAt)}"></small>
+                             </div>
+                        </div>
+                        <button sec:authorize="isAuthenticated()" type="button" class="btn btn-outline report-btn" th:data-post-type="'ANSWER'" th:data-post-id="${answer.id}">
+                            <i class="bi bi-flag"></i> Report
+                        </button>
+                    </div>
+                    <p th:text="${answer.content}"></p>
+                </div>
+                <div th:if="${#lists.isEmpty(question.answers)}" class="text-center p-4">
+                    <p class="text-muted">Belum ada jawaban untuk pertanyaan ini.</p>
+                </div>
+            </div>
+            <br/>
+            <div sec:authorize="isAuthenticated()">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#answerModal">Kirim Jawabanmu</button>
+            </div>
+            
+            <div class="text-center mt-4">
+                <div sec:authorize="!isAuthenticated()">
+                    <p><a th:href="@{/login}">Login</a> atau <a th:href="@{/register}">Register</a> untuk dapat menjawab.</p>
+                </div>
+            </div>
         </div>
-        <hr class="mt-0">
-        <div class="fs-5" th:text="${question.content}" style="white-space: pre-wrap;"></div>
     </div>
     
-    <!-- Bagian Jawaban -->
-    <div class="mb-4">
-        <h5 th:text="${question.answers != null ? question.answers.size() : 0} + ' Answers'"></h5><hr>
-        <div th:if="${question.answers != null}" th:each="answer : ${question.answers}" class="card mb-2">
-            <div class="card-body">
-                <strong class="me-2" th:if="${answer.author}" th:text="${answer.author.nama}"></strong>
-                <strong class="me-2" th:unless="${answer.author}">[Pengguna Dihapus]</strong>
-                <span th:if="${answer.author?.getRole() == 'Student'}" class="badge rounded-pill bg-primary me-2">Student</span>
-                <span th:if="${answer.author?.getRole() == 'Lecturer'}" class="badge rounded-pill bg-success me-2">Lecturer</span>
-                <small class="text-muted"><span th:text="' • ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(answer.createdAt)}"></span></small>
-                <p th:text="${answer.content}" style="white-space: pre-wrap;"></p>
-                <div class="d-flex justify-content-between align-items-center mt-2">
-                    <button sec:authorize="isAuthenticated()" type="button" class="btn btn-sm btn-outline-danger report-btn"
-                           th:data-post-type="'ANSWER'" th:data-post-id="${answer.id}">
-                        Report
-                    </button>
+    <div class="modal fade" id="answerModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                     <h2 class="mb-3">Jawaban Anda</h2>
+                    <form th:action="@{/question/{id}/answers(id=${question.id})}" method="post">
+                        <textarea name="content" class="answer-textarea" placeholder="Berikan penjelasan yang membantu..." required></textarea>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Unggah Jawabanmu</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <div sec:authorize="isAuthenticated()"><hr><button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#answerModal">Post Your Answer</button></div>
-    <div sec:authorize="!isAuthenticated()"><hr><p><a th:href="@{/login}">Login</a> atau <a th:href="@{/register}">Register</a> untuk dapat menjawab.</p></div>
-    <div class="modal fade" id="answerModal" tabindex="-1"><div class="modal-dialog modal-fullscreen"><div class="modal-content">
-        <div class="modal-header"><h5 class="modal-title">Your Answer</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-        <div class="modal-body">
-            <form th:action="@{/question/{id}/answers(id=${question.id})}" method="post">
-                <div class="mb-3"><textarea name="content" class="form-control" rows="15" required></textarea></div>
-                <button type="submit" class="btn btn-primary">Post Your Answer</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </form>
-        </div>
-    </div></div></div>
-
-    <!-- Modal Report -->
     <div class="modal fade" id="reportModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form th:action="@{/report}" method="post">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Report Postingan</h5>
+                <form th:action="@{/report}" method="post" class="p-3">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold">Report</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
+                        <p class="text-muted">Pilih alasan untuk laporan penyalahgunaan konten ini:</p>
                         <input type="hidden" id="reportPostType" name="postType">
                         <input type="hidden" id="reportPostId" name="postId">
-                        <!-- ***** PERBAIKANNYA DI SINI ***** -->
-                        <!-- Menggunakan sintaks @{...} yang lebih aman untuk membuat URL -->
                         <input type="hidden" name="returnUrl" th:value="@{/question/{id}(id=${question.id})}">
                         
-                        <p>Apa alasan Anda melaporkan postingan ini?</p>
                         <div id="question-report-reasons" style="display: none;">
-                            <div class="form-check"><input class="form-check-input" type="radio" name="reason" id="q_reason1" value="Pertanyaan tidak wajar" required><label class="form-check-label" for="q_reason1">Pertanyaan tidak wajar</label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" name="reason" id="q_reason2" value="Konten menghina"><label class="form-check-label" for="q_reason2">Konten menghina</label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" name="reason" id="q_reason3" value="Iklan"><label class="form-check-label" for="q_reason3">Iklan</label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" name="reason" id="q_reason4" value="Pertanyaan terkait data pribadi"><label class="form-check-label" for="q_reason4">Pertanyaan terkait data pribadi</label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" name="reason" id="q_reason5" value="Soal ujian yang sedang berlangsung"><label class="form-check-label" for="q_reason5">Soal ujian yang sedang berlangsung</label></div>
+                            <div class="report-reason"><input class="form-check-input" type="radio" name="q_reason" id="q_reason1" value="Pertanyaan tidak wajar" required><label class="form-check-label" for="q_reason1">Pertanyaan tidak wajar</label></div>
+                            <div class="report-reason"><input class="form-check-input" type="radio" name="q_reason" id="q_reason2" value="Konten menghina"><label class="form-check-label" for="q_reason2">Konten menghina</label></div>
+                            <div class="report-reason"><input class="form-check-input" type="radio" name="q_reason" id="q_reason3" value="Iklan"><label class="form-check-label" for="q_reason3">Iklan</label></div>
+                            <div class="report-reason"><input class="form-check-input" type="radio" name="q_reason" id="q_reason4" value="Pertanyaan terkait data pribadi"><label class="form-check-label" for="q_reason4">Pertanyaan terkait data pribadi</label></div>
+                            <div class="report-reason"><input class="form-check-input" type="radio" name="q_reason" id="q_reason5" value="Soal ujian yang sedang berlangsung"><label class="form-check-label" for="q_reason5">Soal ujian yang sedang berlangsung</label></div>
                         </div>
                         <div id="answer-report-reasons" style="display: none;">
-                            <div class="form-check"><input class="form-check-input" type="radio" name="reason" id="a_reason1" value="Jawaban tidak wajar" required><label class="form-check-label" for="a_reason1">Jawaban tidak wajar</label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" name="reason" id="a_reason2" value="Konten menghina"><label class="form-check-label" for="a_reason2">Konten menghina</label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" name="reason" id="a_reason3" value="Iklan"><label class="form-check-label" for="a_reason3">Iklan</label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" name="reason" id="a_reason4" value="Jawaban terkait data pribadi"><label class="form-check-label" for="a_reason4">Jawaban terkait data pribadi</label></div>
+                            <div class="report-reason"><input class="form-check-input" type="radio" name="a_reason" id="a_reason1" value="Jawaban tidak wajar" required><label class="form-check-label" for="a_reason1">Jawaban tidak wajar</label></div>
+                            <div class="report-reason"><input class="form-check-input" type="radio" name="a_reason" id="a_reason2" value="Konten menghina"><label class="form-check-label" for="a_reason2">Konten menghina</label></div>
+                            <div class="report-reason"><input class="form-check-input" type="radio" name="a_reason" id="a_reason3" value="Iklan"><label class="form-check-label" for="a_reason3">Iklan</label></div>
+                            <div class="report-reason"><input class="form-check-input" type="radio" name="a_reason" id="a_reason4" value="Jawaban terkait data pribadi"><label class="form-check-label" for="a_reason4">Jawaban terkait data pribadi</label></div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Submit Report</button>
+                    <div class="modal-footer border-0">
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Script JavaScript -->
-    <script>
+    <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
         const reportModalEl = document.getElementById('reportModal');
         if (!reportModalEl) return;
@@ -111,29 +202,32 @@
         const reportPostIdInput = document.getElementById('reportPostId');
         const questionReasons = document.getElementById('question-report-reasons');
         const answerReasons = document.getElementById('answer-report-reasons');
+
         document.querySelectorAll('.report-btn').forEach(button => {
             button.addEventListener('click', function () {
                 const postType = this.getAttribute('data-post-type');
                 const postId = this.getAttribute('data-post-id');
                 reportPostTypeInput.value = postType;
                 reportPostIdInput.value = postId;
+                
                 questionReasons.style.display = 'none';
                 answerReasons.style.display = 'none';
-                questionReasons.querySelectorAll('input').forEach(input => { input.required = false; input.name = ''; });
-                answerReasons.querySelectorAll('input').forEach(input => { input.required = false; input.name = ''; });
+                questionReasons.querySelectorAll('input[type="radio"]').forEach(input => { input.name = ''; input.required = false; });
+                answerReasons.querySelectorAll('input[type="radio"]').forEach(input => { input.name = ''; input.required = false; });
+                
                 if (postType === 'QUESTION') {
                     questionReasons.style.display = 'block';
-                    questionReasons.querySelectorAll('input').forEach(input => { input.required = true; input.name = 'reason'; });
+                    questionReasons.querySelectorAll('input').forEach(input => { input.name = 'reason'; input.required = true; });
                 } else if (postType === 'ANSWER') {
                     answerReasons.style.display = 'block';
-                    answerReasons.querySelectorAll('input').forEach(input => { input.required = true; input.name = 'reason'; });
+                    answerReasons.querySelectorAll('input').forEach(input => { input.name = 'reason'; input.required = true; });
                 }
                 reportModal.show();
             });
         });
     });
     </script>
-
+    
     <div sec:authorize="hasAnyRole('ROLE_STUDENT', 'ROLE_LECTURER')" class="fab-container">
         <a th:href="@{/ask}" class="fab" title="Ajukan Pertanyaan">Ajukan Pertanyaan</a>
     </div>

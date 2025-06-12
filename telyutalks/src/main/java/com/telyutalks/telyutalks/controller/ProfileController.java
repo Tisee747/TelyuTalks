@@ -70,7 +70,6 @@ public class ProfileController {
         return "edit_profile";
     }
 
-    // ***** METODE DIPERBARUI: Menangani semua field *****
     @PostMapping("/profile/edit")
     public String processEditProfile(
         @AuthenticationPrincipal UserDetails userDetails,
@@ -103,7 +102,6 @@ public class ProfileController {
         User userToDelete = userRepository.findByUsername(userDetails.getUsername()).orElse(null);
         if (userToDelete != null) {
             userRepository.delete(userToDelete);
-            // Mengarahkan ke logout untuk membersihkan sesi setelah akun dihapus
             return "redirect:/logout"; 
         }
         redirectAttributes.addFlashAttribute("errorMessage", "Could not delete profile.");

@@ -52,7 +52,7 @@ public class Report {
     @Enumerated(EnumType.STRING)
     private ReportStatus status = ReportStatus.PENDING;
 
-    // Getters and Setters
+    // Getters Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public PostType getPostType() { return postType; }

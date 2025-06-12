@@ -5,7 +5,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("STUDENT") // When this is saved, the 'role' column will be 'STUDENT'
+@DiscriminatorValue("STUDENT")
 public class Student extends User {
 
     @Column(unique = true)
@@ -15,7 +15,6 @@ public class Student extends User {
     
     private String angkatan;
 
-    // Getters and Setters for student-specific fields
     public String getNim() { return nim; }
     public void setNim(String nim) { this.nim = nim; }
     public String getProgramStudi() { return programStudi; }

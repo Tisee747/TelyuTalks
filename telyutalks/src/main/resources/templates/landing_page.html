@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" 
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(pageTitle='Selamat Datang', content=~{::content}, showFooter=true)}">
+
+<th:block th:fragment="content">
+    <style>
+        .hero-section {
+            background-color: #f2eee6;
+            padding: 60px 0;
+            border-radius: 24px;
+        }
+        .hero-content h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--telyu-black);
+            line-height: 1.3;
+        }
+        .hero-content p {
+            font-size: 16px;
+            color: var(--telyu-body-text);
+            max-width: 450px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .hero-search-bar {
+            width: 100%;
+            max-width: 450px;
+            height: 56px;
+            border-radius: 28px;
+            border: 1px solid var(--telyu-border-color);
+            padding: 0 25px;
+            font-size: 16px;
+            background-color: var(--telyu-white);
+        }
+        .hero-illustration img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 60px;
+            margin-bottom: 30px;
+        }
+
+        .question-card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .question-item {
+            background: var(--telyu-white);
+            border: 1px solid var(--telyu-border-color);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .question-card-link:hover .question-item {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.07);
+        }
+        .question-author {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .question-author .author-icon { font-size: 18px; color: var(--telyu-red); margin-right: 8px; }
+        .question-author .author-name { font-weight: 600; }
+        .question-author .time { color: #6c757d; margin-left: 8px; }
+        .question-content { color: var(--telyu-black); }
+    </style>
+
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1>Curhat, Tanya, Diskusi?<br>Di Sini Tempatnya!</h1>
+                    <p>TelyuTalk adalah platform diskusi interaktif untuk mahasiswa Telkom University. Tempat berbagi pengetahuan, bertukar ide, dan saling membantu dalam menyelesaikan tantangan akademik dan kehidupan kampus.</p>
+                    <a th:href="@{/ask}">
+                        <input type="text" class="hero-search-bar" placeholder="Apa pertanyaanmu?">
+                    </a>
+                </div>
+                <div class="col-lg-6 hero-illustration text-center">
+                    <img th:src="@{/images/hero-illustration.png}" alt="Ilustrasi Diskusi Mahasiswa">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Pertanyaan Terbaru</h2>
+    <div class="question-list">
+        <a th:each="question : ${questions}" th:href="@{/question/{id}(id=${question.id})}" class="question-card-link">
+            <div class="question-item">
+                <div class="question-author">
+                    <i class="bi bi-person-circle author-icon"></i>
+                    <span class="author-name" th:text="${question.author.nama}"></span>
+                    <span th:if="${question.author?.role == 'Student'}" class="badge rounded-pill badge-mahasiswa ms-2">Mahasiswa</span>
+                    <span th:if="${question.author?.role == 'Lecturer'}" class="badge rounded-pill badge-dosen ms-2">Dosen</span>
+                    <span class="time" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></span>
+                </div>
+                <p class="question-content" th:text="${#strings.abbreviate(question.content, 250)}"></p>
+            </div>
+        </a>
+    </div>
+
+    <div class="fab-container">
+        <a th:href="@{/ask}" class="btn btn-primary btn-lg">Ajukan Pertanyaan</a>
+    </div>
+
+</th:block>
+</html>

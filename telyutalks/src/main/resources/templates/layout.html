@@ -1,69 +1,273 @@
 <!DOCTYPE html>
-
-<!-- Import -->
 <html lang="en" 
       xmlns:th="http://www.thymeleaf.org" 
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:fragment="layout (pageTitle, content)">
+      th:fragment="layout (pageTitle, content, showFooter)">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle} + ' - TelyuTalks'">TelyuTalks</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
 
-<!-- Navbar -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        body { padding-top: 70px; background-color: #f8f9fa; min-height: 100vh; display: flex; flex-direction: column; }
-        .flex-grow-1 { flex-grow: 1; }
-        .fab-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1050; }
-        .fab { display: flex; align-items: center; justify-content: center; width: auto; padding: 0.8rem 1.5rem; border-radius: 50px; background-color: #0d6efd; color: white; font-size: 1rem; text-decoration: none; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: transform 0.2s ease-in-out; }
-        .fab:hover { transform: scale(1.05); color: white; }
+        /* =================================
+           GLOBAL STYLES & DESIGN SYSTEM
+           ================================= */
+        :root {
+            /* Color Palette */
+            --telyu-red: #A12520;
+            --telyu-white: #FFFFFF;
+            --telyu-black: #000000;
+            --telyu-light-bg: #EBF2F7;
+
+            /* Warna untuk elemen lain */
+            --telyu-body-text: #495057;
+            --telyu-border-color: #DEE2E6;
+            --telyu-gray-button-bg: #6c757d;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--telyu-light-bg);
+            color: var(--telyu-body-text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 85px;
+        }
+
+        .main-container {
+            padding-bottom: 40px;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--telyu-black);
+            font-weight: 700;
+        }
+        
+        /* Buttons */
+        .btn {
+            border-radius: 25px;
+            font-weight: 600;
+            padding: 10px 24px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: var(--telyu-red);
+            color: var(--telyu-white);
+        }
+        .btn-primary:hover {
+            background-color: #8a1f1a;
+        }
+        .btn-secondary {
+             background-color: var(--telyu-gray-button-bg);
+             color: var(--telyu-white);
+        }
+        .btn-secondary:hover {
+             background-color: #5a6268;
+        }
+        .btn-outline {
+            background-color: transparent;
+            color: var(--telyu-red);
+            border: 1px solid var(--telyu-red);
+            border-radius: 8px;
+        }
+        
+        /* Cards */
+        .card-custom {
+            background-color: var(--telyu-white);
+            border: 1px solid var(--telyu-border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* =================================
+           HEADER / NAVBAR
+           ================================= */
+        .navbar-custom {
+            background-color: var(--telyu-white) !important;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .navbar-logo {
+            height: 40px;
+        }
+        .search-container {
+            position: relative;
+            width: 45%;
+        }
+        .search-input {
+            width: 100%;
+            height: 48px;
+            border-radius: 24px;
+            border: 1px solid var(--telyu-border-color);
+            padding-left: 20px;
+            padding-right: 50px;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--telyu-red);
+            box-shadow: 0 0 0 2px rgba(161, 37, 32, 0.2);
+        }
+        .search-submit-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: var(--telyu-red);
+            color: var(--telyu-white);
+            border: none;
+            font-size: 16px;
+        }
+        .profile-icon {
+            font-size: 28px;
+            color: var(--telyu-red);
+        }
+
+        /* =================================
+           FLOATING ACTION BUTTON (FAB)
+           ================================= */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+        }
+        .fab {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--telyu-red);
+            color: var(--telyu-white);
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease-in-out;
+        }
+        .fab:hover {
+            transform: scale(1.05);
+            color: var(--telyu-white);
+        }
+
+        /* =================================
+           CUSTOM ROLE BADGES
+           ================================= */
+        .badge-dosen {
+            background-color: var(--telyu-red);
+            color: var(--telyu-white);
+        }
+        
+        .badge-mahasiswa {
+            background-color: var(--telyu-white);
+            color: var(--telyu-red);
+            border: 1px solid var(--telyu-red);
+        }
+
+        /* =================================
+           FOOTER
+           ================================= */
+        .footer-new {
+            background-color: #f4f4f4;
+            color: var(--telyu-body-text);
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        .footer-slogan {
+            color: var(--telyu-red);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .footer-description {
+            font-size: 0.7rem; 
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 1rem;
+        }
+        .footer-copyright {
+            font-size: 0.6rem; 
+            color: #6c757d;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-white fixed-top" style="box-shadow: 0 2px 4px rgba(0,0,0,.1);">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/}">TelyuTalks</a>
-            <div class="w-50 mx-auto" sec:authorize="!hasRole('ROLE_ADMIN')">
-                <form class="d-flex" th:action="@{/search}" method="get">
-                    <input class="form-control" type="search" name="query" placeholder="Search questions..." required>
-                    <button class="btn btn-outline-primary ms-2" type="submit">Search</button>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-custom">
+        <div class="container">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo-telyutalks.png}" alt="TelyuTalks Logo" class="navbar-logo">
+            </a>
+
+            <div class="search-container mx-auto" sec:authorize="isAuthenticated()">
+                <form th:action="@{/search}" method="get">
+                    <input class="search-input" type="search" name="query" placeholder="Cari pertanyaan kamu disini..." required>
+                    <button class="search-submit-btn" type="submit"><i class="bi bi-search"></i></button>
                 </form>
             </div>
-            <ul class="navbar-nav flex-row align-items-center ms-auto" style="white-space: nowrap;">
-                <li sec:authorize="!isAuthenticated()" class="nav-item">
-                    <a class="btn btn-primary" th:href="@{/login}">Login</a>
-                </li>
-                <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                        <span sec:authentication="name">Username</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li sec:authorize="hasAnyRole('ROLE_STUDENT', 'ROLE_LECTURER')"><a class="dropdown-item" th:href="@{/profile}">My Profile</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><form th:action="@{/logout}" method="post" class="d-inline"><button type="submit" class="dropdown-item">Logout</button></form></li>
-                    </ul>
-                </li>
-            </ul>
+            
+            <div sec:authorize="!isAuthenticated()">
+                 <a class="btn btn-primary" th:href="@{/login}">Masuk</a>
+            </div>
+
+            <div sec:authorize="isAuthenticated()" class="dropdown">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle profile-icon"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownUser1">
+                    <li class="px-3 py-2">
+                        <strong sec:authentication="name">Username</strong>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" th:href="@{/profile}">Profil Saya</a></li>
+                    <li><a class="dropdown-item" th:href="@{/ask}">Tanya Pertanyaan</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="dropdown-item">Keluar</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-<!-- Body -->
-    <main class="container py-4" th:replace="${content}"></main>
+    <main class="main-container container" th:replace="${content}"></main>
     
- <!-- Footer -->
-    <footer th:if="${showFooter} != false" class="bg-light text-center text-lg-start mt-auto">
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">© 2025 TelyuTalks</div>
+    <footer th:if="${showFooter} != false" class="footer-new">
+        <div class="container">
+            <h5 class="footer-slogan">The spark behind every solution.</h5>
+            <p class="footer-description">This website is a project developed as the final assignment for the Object-Oriented Programming course.</p>
+            <p class="footer-copyright">&copy; TelyuTalk - 2025</p>
+        </div>
     </footer>
     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('/service-worker.js'); });
+            window.addEventListener('load', () => { 
+                navigator.serviceWorker.register('/service-worker.js'); 
+            });
         }
     </script>
 </body>

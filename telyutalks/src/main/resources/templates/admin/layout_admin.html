@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle} + ' - Admin Panel'">TelyuTalks</title>
+    <link rel="manifest" href="/manifest.json">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-    /* Definisi Palet Warna */
+    /* Color Pallete */
         :root {
             --telyu-red: #A12520;
             --telyu-white: #FFFFFF;
@@ -20,7 +21,7 @@
         body {
             display: flex;
             min-height: 100vh;
-            background-color: var(--telyu-light-bg); /* Latar belakang utama */
+            background-color: var(--telyu-light-bg);
         }
         .sidebar {
             width: 280px;
@@ -36,10 +37,10 @@
             margin-left: 280px;
             width: calc(100% - 280px);
             padding: 2rem;
-            color: var(--telyu-black); /* Warna teks utama */
+            color: var(--telyu-black);
         }
 
-        /* --- STYLING SIDEBAR --- */
+        /* STYLING SIDEBAR */
         .sidebar .nav-link {
             color: #495057;
             padding: .75rem 1rem;
@@ -51,7 +52,7 @@
             color: var(--telyu-white);
             background-color: #343a40;
         }
-        /* Tautan aktif di sidebar menggunakan warna merah baru */
+
         .sidebar .nav-link.active {
             color: var(--telyu-white);
             font-weight: bold;
@@ -68,7 +69,7 @@
             width: 100%;
             padding: 1rem;
         }
-        /* Style untuk logo di sidebar */
+
         .sidebar-logo {
             max-width: 100px;
             margin-bottom: 1rem;
@@ -77,23 +78,20 @@
         .btn-primary, .btn-danger, .btn-info, .btn-success, .btn-warning, .btn-secondary, .btn-dark {
             background-color: var(--telyu-red);
             border-color: var(--telyu-red);
-            color: var(--telyu-white) !important; /* Tambahkan !important untuk memastikan warna teks putih */
+            color: var(--telyu-white) !important;
         }
 
-        /* Hover state untuk semua tombol solid */
         .btn-primary:hover, .btn-danger:hover, .btn-info:hover, .btn-success:hover, 
         .btn-warning:hover, .btn-secondary:hover, .btn-dark:hover {
-            background-color: #811e1a; /* Warna merah lebih gelap saat hover */
+            background-color: #811e1a;
             border-color: #811e1a;
         }
 
-        /* Grup untuk semua tombol outline */
         .btn-outline-info, .btn-outline-danger {
             color: var(--telyu-red);
             border-color: var(--telyu-red);
         }
 
-        /* Hover state untuk semua tombol outline */
         .btn-outline-info:hover, .btn-outline-danger:hover {
             background-color: var(--telyu-red);
             border-color: var(--telyu-red);
@@ -101,7 +99,7 @@
         }
 
         .card-square {
-        aspect-ratio: 1 / 1; /* Membuat tinggi sama dengan lebar */
+        aspect-ratio: 1 / 1;
         }
         .card-body-centered {
             display: flex;
@@ -114,10 +112,8 @@
 <body>
     <div class="sidebar d-flex flex-column p-3">
         <div class="sidebar-header mb-3">
-            <img th:src="@{/images/logo-telyutalks.png}" alt="TelyuTalks Logo" class="sidebar-logo"/>
-
-            <a th:href="@{/admin/dashboard}" class="d-flex align-items-center justify-content-center mb-3 text-black text-decoration-none">
-                <span class="fs-4">TelyuTalks Admin</span>
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo-telyutalks.png}" alt="TelyuTalks Logo" class="sidebar-logo">
             </a>
         </div>
     <ul class="nav nav-pills flex-column mb-auto">
@@ -139,5 +135,12 @@
     <div class="main-content">
         <th:block th:replace="${content}"></th:block>
     </div>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { 
+                navigator.serviceWorker.register('/service-worker.js'); 
+            });
+        }
+    </script>
 </body>
 </html>

@@ -4,22 +4,110 @@
       th:replace="~{layout :: layout(pageTitle='Home', content=~{::content}, showFooter=true)}">
 
 <th:block th:fragment="content">
-    <div class="d-flex justify-content-between align-items-center mb-4"><h1>Latest Questions</h1></div>
-    <div class="list-group">
-        <a th:each="question : ${questions}" th:href="@{/question/{id}(id=${question.id})}" class="list-group-item list-group-item-action">
-             <div class="d-flex align-items-center mb-2">
-                <strong class="me-2" th:text="${question.author.nama}"></strong>
-                <span th:if="${question.author?.getRole() == 'Student'}" class="badge rounded-pill bg-primary me-2">Student</span>
-                <span th:if="${question.author?.getRole() == 'Lecturer'}" class="badge rounded-pill bg-success me-2">Lecturer</span>
-                <small class="text-muted" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></small>
+    <style>
+        .ask-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ask-card-content p {
+            font-size: 14px;
+            margin: 0;
+            color: var(--telyu-body-text);
+        }
+        .ask-card-content h3 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .question-list-card .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .question-author {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .question-author .author-icon {
+            font-size: 18px;
+            color: var(--telyu-red);
+            margin-right: 8px;
+        }
+        .question-author .author-name {
+            font-weight: 600;
+        }
+        .question-author .time {
+            color: #6c757d;
+            margin-left: 8px;
+        }
+        .question-content {
+            margin-bottom: 20px;
+            color: var(--telyu-black);
+            flex-grow: 1;
+        }
+        .question-footer {
+            text-align: right;
+        }
+        .question-card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .question-item {
+            background: var(--telyu-white);
+            border: 1px solid var(--telyu-border-color);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .question-card-link:hover .question-item {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.07);
+        }
+    </style>
+
+    <div class="card-custom mb-4">
+        <div class="ask-card">
+            <div class="ask-card-content">
+                <p>Selamat datang, <span th:text="${#authentication.name}"></span>!</p>
+                <h3>Punya pertanyaan?</h3>
             </div>
-            <p class="mb-1" th:text="${#strings.abbreviate(question.content, 150)}">
-            </p>
-        </a>
-        <div th:if="${#lists.isEmpty(questions)}" class="text-center p-5 border rounded bg-light">
-            <p class="lead">No questions have been asked yet.</p>
+            <a th:href="@{/ask}" class="btn btn-primary">Tanya Sekarang!</a>
         </div>
     </div>
+
+    <div class="card-custom question-list-card">
+        <h2 class="section-title">Pertanyaan Terbaru</h2>
+        <div class="question-list">
+            
+            <a th:each="question : ${questions}" 
+               th:href="@{/question/{id}(id=${question.id})}" 
+               class="question-card-link">
+                
+                <div class="question-item">
+                    <div class="question-author">
+                        <i class="bi bi-person-circle author-icon"></i>
+                        <span class="author-name" th:text="${question.author.nama}"></span>
+                        <span th:if="${question.author?.role == 'Student'}" class="badge rounded-pill badge-mahasiswa ms-2">Mahasiswa</span>
+                        <span th:if="${question.author?.role == 'Lecturer'}" class="badge rounded-pill badge-dosen ms-2">Dosen</span>
+                        <span class="time" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></span>
+                    </div>
+                    <p class="question-content" th:text="${#strings.abbreviate(question.content, 250)}"></p>
+                    </div>
+
+            </a>
+
+            <div th:if="${#lists.isEmpty(questions)}" class="text-center p-5">
+                <p class="lead">Belum ada pertanyaan yang diajukan.</p>
+            </div>
+        </div>
+    </div>
+
     <div sec:authorize="hasAnyRole('ROLE_STUDENT', 'ROLE_LECTURER')" class="fab-container">
         <a th:href="@{/ask}" class="fab" title="Ajukan Pertanyaan">Ajukan Pertanyaan</a>
     </div>

@@ -1,19 +1,46 @@
 <!DOCTYPE html>
 <html lang="en" 
       xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(pageTitle='Home', content=~{::content}, showFooter=true)}">
+      th:replace="~{layout :: layout(pageTitle='Edit Question', content=~{::content}, showFooter=true)}">
 
 <th:block th:fragment="content">
-    <h2>Edit Your Question</h2>
-    <hr>
-    <form th:action="@{/question/{id}/edit(id=${question.id})}" method="post">
-        <div class="mb-3">
-            <label for="content" class="form-label fw-bold">Question Content</label>
-            <textarea id="content" name="content" class="form-control" rows="12" required th:text="${question.content}"></textarea>
+    <style>
+        .edit-question-container h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        .edit-textarea {
+            width: 100%;
+            min-height: 250px;
+            border-radius: 16px;
+            border: 1px solid var(--telyu-border-color);
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            resize: vertical;
+        }
+        .edit-textarea:focus {
+            outline: none;
+            border-color: var(--telyu-red);
+            box-shadow: 0 0 0 2px rgba(161, 37, 32, 0.2);
+        }
+    </style>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card-custom edit-question-container">
+                <h2>Edit Pertanyaan Anda</h2>
+                <form th:action="@{/question/{id}/edit(id=${question.id})}" method="post">
+                    <div class="mb-3">
+                        <textarea id="content" name="content" class="edit-textarea" required th:text="${question.content}"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <a th:href="@{/question/{id}(id=${question.id})}" class="btn btn-secondary">Batal</a>
+                </form>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a th:href="@{/profile}" class="btn btn-secondary">Cancel</a>
-    </form>
+    </div>
 </th:block>
 
 </html>

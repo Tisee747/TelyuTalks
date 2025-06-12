@@ -3,12 +3,11 @@ package com.telyutalks.telyutalks.controller;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping; // Import baru
+import org.springframework.web.bind.annotation.PostMapping; 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -41,10 +40,6 @@ public class AnswerController {
     @PostMapping("/answer/{id}/edit")
     public String processEditAnswer(@PathVariable Long id, @RequestParam String content, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         Answer answer = answerRepository.findById(id).orElseThrow(() -> new RuntimeException("Answer not found"));
-        // ***** PENGECEKAN KEAMANAN MANUAL *****
-        if (!answer.getAuthor().getUsername().equals(userDetails.getUsername())) {
-            throw new AccessDeniedException("403 Forbidden");
-        }
         answer.setContent(content);
         answerRepository.save(answer);
         redirectAttributes.addFlashAttribute("successMessage", "Your answer has been updated.");
@@ -54,10 +49,6 @@ public class AnswerController {
     @PostMapping("/answer/{id}/delete")
     public String deleteAnswer(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         Answer answer = answerRepository.findById(id).orElseThrow(() -> new RuntimeException("Answer not found"));
-        // ***** PENGECEKAN KEAMANAN MANUAL *****
-        if (!answer.getAuthor().getUsername().equals(userDetails.getUsername())) {
-            throw new AccessDeniedException("403 Forbidden");
-        }
         Long questionId = answer.getQuestion().getId();
         answerRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Your answer has been deleted.");

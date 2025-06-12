@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout_admin :: layout(pageTitle='View Post', content=~{::content})}">
+<body>
+<th:block th:fragment="content">
+    <a th:href="@{/admin/posts/questions}" class="btn btn-secondary mb-3">← Back to Question List</a>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Question Details</h4>
+            <form th:action="@{/admin/questions/delete/{id}(id=${question.id})}" method="post" onsubmit="return confirm('Delete this question and ALL its answers?');">
+                <button type="submit" class="btn btn-danger">Delete Question</button>
+            </form>
+        </div>
+        <div class="card-body">
+            <p style="white-space: pre-wrap;" th:text="${question.content}"></p>
+        </div>
+    </div>
+    
+    <h5>Answers</h5>
+    <div th:each="answer : ${question.answers}" class="card mb-2">
+        <div class="card-body d-flex justify-content-between align-items-start">
+            <div>
+                <p th:text="${answer.content}"></p>
+                <small class="text-muted" th:text="'By: ' + ${answer.author?.nama}"></small>
+            </div>
+            <form th:action="@{/admin/answers/delete/{id}(id=${answer.id})}" method="post" onsubmit="return confirm('Delete this answer?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+    <div th:if="${#lists.isEmpty(question.answers)}" class="alert alert-info">No answers for this question.</div>
+</th:block>
+</body>
+</html>

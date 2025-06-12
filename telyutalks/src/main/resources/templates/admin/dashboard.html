@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)"
-      th:replace="~{admin/layout :: layout(pageTitle='Dashboard', content=~{::content})}">
+      th:replace="~{admin/layout_admin :: layout(pageTitle='Dashboard', content=~{::content})}">
 <body>
     <th:block th:fragment="content">
         <h1 class="mb-4">Dashboard</h1>
@@ -29,8 +29,8 @@
                 <div class="card shadow h-100 py-2 card-square">
                     <div class="card-body card-body-centered">
                         <div class="text-center">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Pertanyaan</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${questionCount}">0</div>
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Postingan</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${questionCount} + ${answerCount}">0</div>
                         </div>
                     </div>
                 </div>
@@ -62,25 +62,22 @@
         <script th:inline="javascript">
             /*<![CDATA[*/
 
-            // Menjalankan kode hanya setelah seluruh halaman HTML selesai dimuat
             document.addEventListener('DOMContentLoaded', (event) => {
                 
-                // Mengambil data dari Model Spring Boot
                 const studentCount = /*[[${studentCount}]]*/ 0;
                 const lecturerCount = /*[[${lecturerCount}]]*/ 0;
-                const questionCount = /*[[${questionCount}]]*/ 0;
+                const postCount = /*[[${questionCount} + ${answerCount}]]*/ 0;
                 const reportCount = /*[[${reportCount}]]*/ 0;
                 
-                // Pengaturan Grafik
                 const ctx = document.getElementById('myBarChart');
-                if (ctx) { // Menambahkan pengecekan jika elemen canvas ada
+                if (ctx) { 
                     new Chart(ctx, {
-                        type: 'bar', // Jenis grafik
+                        type: 'bar', 
                         data: {
-                            labels: ['Mahasiswa', 'Dosen', 'Pertanyaan', 'Laporan'], // Label untuk sumbu X
+                            labels: ['Mahasiswa', 'Dosen', 'Postingan', 'Laporan'],
                             datasets: [{
                                 label: 'Jumlah',
-                                data: [studentCount, lecturerCount, questionCount, reportCount], // Data untuk setiap bar
+                                data: [studentCount, lecturerCount, postCount, reportCount],
                                 backgroundColor: [
                                     'rgba(54, 162, 235, 0.6)',
                                     'rgba(75, 192, 192, 0.6)',
@@ -104,7 +101,7 @@
                             },
                             plugins: {
                                 legend: {
-                                    display: false // Menyembunyikan legenda karena sudah jelas
+                                    display: false
                                 }
                             }
                         }

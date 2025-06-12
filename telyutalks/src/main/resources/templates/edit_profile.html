@@ -21,7 +21,6 @@
                         <div class="col-md-6">
                             <label for="studentFakultas" class="form-label">Fakultas</label>
                             <select id="studentFakultas" name="fakultas" class="form-select" required>
-                                <!-- Thymeleaf akan mengisi dan memilih opsi yang benar di sini -->
                                 <option th:each="fakultasEntry : ${prodiData}"
                                         th:value="${fakultasEntry.key}"
                                         th:text="${fakultasEntry.key}"
@@ -31,7 +30,6 @@
                         <div class="col-md-6">
                             <label for="studentProdi" class="form-label">Program Studi</label>
                             <select id="studentProdi" name="programStudi" class="form-select" required>
-                                <!-- Opsi akan diisi oleh JavaScript -->
                             </select>
                         </div>
                         <div class="col-12">
@@ -64,7 +62,6 @@
 
             <hr class="my-4">
             <div class="card border-danger">
-                <div class="card-header bg-danger text-white">Danger Zone</div>
                 <div class="card-body">
                     <h5 class="card-title text-danger">Delete This Account</h5>
                     <p class="card-text">Setelah Anda menghapus akun, tidak ada jalan untuk kembali.</p>
@@ -102,7 +99,7 @@
             };
             
             fakultasSelect.addEventListener('change', updateProdiOptions);
-            updateProdiOptions(); // Panggil sekali untuk mengisi data awal
+            updateProdiOptions();
         }
     });
     </script>

@@ -45,7 +45,7 @@ public class AdminController {
 
     @GetMapping("/login")
     public String adminLoginPage() {
-        return "admin/login";
+        return "admin/login_admin";
     }
 
     @GetMapping("/dashboard")
@@ -78,7 +78,7 @@ public class AdminController {
         model.addAttribute("questions", questions);
         model.addAttribute("query", query);
         model.addAttribute("activePage", "posts"); // Ditambahkan
-        return "admin/posts_list";
+        return "admin/posts_list_questions";
     }
 
     @GetMapping("/posts/answers")
@@ -91,7 +91,7 @@ public class AdminController {
         }
         model.addAttribute("answers", answers);
         model.addAttribute("query", query);
-        model.addAttribute("activePage", "posts"); // Ditambahkan
+        model.addAttribute("activePage", "posts");
         return "admin/posts_list_answers";
     }
 
@@ -101,7 +101,7 @@ public class AdminController {
         Question question = questionRepository.findById(id).orElse(null);
         if(question == null) return "redirect:/admin/posts";
         model.addAttribute("question", question);
-        model.addAttribute("activePage", "posts"); // Ditambahkan
+        model.addAttribute("activePage", "posts");
         return "admin/posts_view";
     }
 
@@ -135,30 +135,63 @@ public class AdminController {
         model.addAttribute("activePage", "reports"); // Ditambahkan
         return "admin/reports_menu";
     }
+    @GetMapping("/reports/view/{reportId}")
+    public String viewReportDetail(@PathVariable Long reportId, Model model, RedirectAttributes redirectAttributes) {
+        Report report = reportRepository.findById(reportId).orElse(null);
+
+        if (report == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Report not found.");
+            return "redirect:/admin/reports";
+        }
+
+        if (report.getPostType() == Report.PostType.QUESTION) {
+            Question question = questionRepository.findById(report.getPostId()).orElse(null);
+            model.addAttribute("question", question);
+            model.addAttribute("report", report);
+            return "admin/reports_view_questions";
+        } else if (report.getPostType() == Report.PostType.ANSWER) {
+            Answer answer = answerRepository.findByIdWithQuestion(report.getPostId()).orElse(null);
+            if (answer != null) {
+                model.addAttribute("question", answer.getQuestion());
+                model.addAttribute("reportedAnswer", answer);
+                model.addAttribute("report", report);
+            }
+            return "admin/reports_view_answers";
+        }
+        return "redirect:/admin/reports";
+    }
     
     @GetMapping("/reports/list")
     public String showReportList(@RequestParam("type") String type, Model model) {
         try {
-            Report.PostType postType = Report.PostType.valueOf(type.toUpperCase());
-            List<Report> reports = reportRepository.findByPostType(postType);
-            model.addAttribute("reports", reports);
-            model.addAttribute("reportType", type.substring(0, 1).toUpperCase() + type.substring(1) + "s");
-            model.addAttribute("activePage", "reports"); // Ditambahkan   
-            return "admin/reports_list";
+            if ("question".equalsIgnoreCase(type)) {
+                List<Report> reports = reportRepository.findByPostType(Report.PostType.QUESTION);
+                model.addAttribute("reports", reports);
+                return "admin/reports_list_questions";
+            } else if ("answer".equalsIgnoreCase(type)) {
+                List<Report> reports = reportRepository.findByPostType(Report.PostType.ANSWER);
+                model.addAttribute("reports", reports);
+                return "admin/reports_list_answers";
+            }
         } catch (IllegalArgumentException e) {
-            return "redirect:/admin/reports";
+            // Tangani jika tipe tidak valid
         }
+        return "redirect:/admin/reports";
     }
 
     @PostMapping("/reports/resolve/{id}")
     public String resolveReport(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Report report = reportRepository.findById(id).orElse(null);
+        String type = "question"; 
+
         if (report != null) {
-            report.setStatus(Report.ReportStatus.RESOLVED);
-            reportRepository.save(report);
-            redirectAttributes.addFlashAttribute("successMessage", "Report has been marked as resolved.");
+            type = report.getPostType().name().toLowerCase();
         }
-        return "redirect:/admin/reports/list?type=" + report.getPostType().name().toLowerCase();
+
+        reportRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Report has been deleted.");
+        
+        return "redirect:/admin/reports/list?type=" + type;
     }
 
     @PostMapping("/reports/delete/{id}")
@@ -173,6 +206,7 @@ public class AdminController {
         return "redirect:/admin/reports/list?type=" + type;
     }
 
+
     // Metode untuk /accounts yang mungkin belum ada atau belum lengkap
     @GetMapping("/accounts")
     public String showAllAccounts(@RequestParam(required = false) String query, Model model) {
@@ -184,7 +218,7 @@ public class AdminController {
         }
         model.addAttribute("users", users);
         model.addAttribute("query", query);
-        model.addAttribute("activePage", "accounts"); // Ditambahkan
+        model.addAttribute("activePage", "accounts");
         return "admin/accounts";
     }
 
@@ -196,7 +230,7 @@ public class AdminController {
             return "redirect:/admin/accounts";
         }
         model.addAttribute("user", user);
-        model.addAttribute("activePage", "accounts"); // Ditambahkan
+        model.addAttribute("activePage", "accounts");
         return "admin/profile_view"; 
     }
 }
