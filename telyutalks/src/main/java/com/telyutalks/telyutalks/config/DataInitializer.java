@@ -18,10 +18,10 @@ public class DataInitializer implements CommandLineRunner {
         if (!userRepository.findByUsername("admin").isPresent()) {
             System.out.println("Membuat pengguna ADMIN default...");
             
-            Admin admin = new Admin(); // Membuat instance dari kelas Admin
+            Admin admin = new Admin();
             admin.setUsername("admin");
             admin.setNama("Admin TelyuTalks");
-            admin.setFakultas("SYSTEM"); // Fakultas bisa diisi 'SYSTEM' atau sejenisnya
+            admin.setFakultas("SYSTEM");
             admin.setEmail("admin@telyutalks.com");
             admin.setPassword(passwordEncoder.encode("admin123"));
             
