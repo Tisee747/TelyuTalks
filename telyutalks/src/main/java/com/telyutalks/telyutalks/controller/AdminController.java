@@ -54,7 +54,7 @@ public class AdminController {
         model.addAttribute("questionCount", questionRepository.count());
         model.addAttribute("answerCount", answerRepository.count());
         model.addAttribute("reportCount", reportRepository.count());
-        model.addAttribute("activePage", "dashboard"); // Ditambahkan
+        model.addAttribute("activePage", "dashboard");
         return "admin/dashboard";
     }
 
@@ -62,7 +62,7 @@ public class AdminController {
     public String showPostsMenu(Model model) {
         model.addAttribute("questionCount", questionRepository.count());
         model.addAttribute("answerCount", answerRepository.count());
-        model.addAttribute("activePage", "posts"); // Ditambahkan
+        model.addAttribute("activePage", "posts");
         return "admin/posts_menu";
     }
 
@@ -76,7 +76,7 @@ public class AdminController {
         }
         model.addAttribute("questions", questions);
         model.addAttribute("query", query);
-        model.addAttribute("activePage", "posts"); // Ditambahkan
+        model.addAttribute("activePage", "posts");
         return "admin/posts_list_questions";
     }
 
@@ -175,7 +175,7 @@ public class AdminController {
                 return "admin/reports_list_answers";
             }
         } catch (IllegalArgumentException e) {
-            // Tangani jika tipe tidak valid
+            
         }
         return "redirect:/admin/reports";
     }
@@ -197,7 +197,7 @@ public class AdminController {
 
     @PostMapping("/reports/delete/{id}")
     public String deleteReport(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        String type = "question"; // default
+        String type = "question";
         Report report = reportRepository.findById(id).orElse(null);
         if (report != null) {
             type = report.getPostType().name().toLowerCase();
@@ -208,7 +208,6 @@ public class AdminController {
     }
 
 
-    // Metode untuk /accounts yang mungkin belum ada atau belum lengkap
     @GetMapping("/accounts")
     public String showAllAccounts(@RequestParam(required = false) String query, Model model) {
         List<User> users;
@@ -223,7 +222,6 @@ public class AdminController {
         return "admin/accounts";
     }
 
-    // Metode untuk /profile/{id} yang mungkin belum ada atau belum lengkap
     @GetMapping("/profile/{id}")
     public String viewUserProfile(@PathVariable Long id, Model model) {
         User user = userRepository.findById(id).orElse(null);
