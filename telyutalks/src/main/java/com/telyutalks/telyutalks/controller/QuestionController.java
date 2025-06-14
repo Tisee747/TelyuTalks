@@ -17,6 +17,8 @@ import com.telyutalks.telyutalks.model.Question;
 import com.telyutalks.telyutalks.model.User;
 import com.telyutalks.telyutalks.repository.QuestionRepository;
 import com.telyutalks.telyutalks.repository.UserRepository;
+import com.telyutalks.telyutalks.repository.ReportRepository;
+import com.telyutalks.telyutalks.model.Report;
 
 @Controller
 public class QuestionController {
@@ -26,6 +28,9 @@ public class QuestionController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
 
     @GetMapping("/ask")
     public String showAskQuestionForm() { return "ask_question"; }
@@ -71,6 +76,7 @@ public class QuestionController {
 
     @PostMapping("/question/{id}/delete")
     public String deleteQuestion(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+        reportRepository.deleteByPostIdAndPostType(id, Report.PostType.QUESTION);
         questionRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Your question has been deleted.");
         return "redirect:/";

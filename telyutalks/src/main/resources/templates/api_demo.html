@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" 
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(pageTitle='API Demo', content=~{::content}, showFooter=true)}">
+
+<th:block th:fragment="content">
+    <div class="card-custom mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h2 class="mb-1">Demonstrasi REST API</h2>
+            </div>
+            <button id="fetch-users-btn" class="btn btn-primary" style="min-width: 180px;">
+                <i class="bi bi-arrow-clockwise me-2"></i>Ambil Data Pengguna
+            </button>
+        </div>
+        <hr>
+        
+        <div id="api-result-container" class="mt-4">
+            
+            <div id="loading-spinner" class="text-center d-none">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Mengambil data dari server...</p>
+            </div>
+
+            <div id="error-alert-container"></div>
+            
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Lengkap</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                        </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fetchBtn = document.getElementById('fetch-users-btn');
+        const tableBody = document.getElementById('user-table-body');
+        const spinner = document.getElementById('loading-spinner');
+        const errorContainer = document.getElementById('error-alert-container');
+
+        fetchBtn.addEventListener('click', function() {
+            // --- Tahap Persiapan ---
+            // 1. Nonaktifkan tombol untuk mencegah klik ganda
+            fetchBtn.disabled = true;
+            fetchBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Memuat...';
+            
+            // 2. Bersihkan hasil sebelumnya dan tampilkan spinner
+            tableBody.innerHTML = '';
+            errorContainer.innerHTML = '';
+            spinner.classList.remove('d-none');
+
+            // --- Tahap Pemanggilan API ---
+            fetch('/api/users')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    // --- Tahap Sukses ---
+                    // Cek jika data yang diterima kosong
+                    if (users.length === 0) {
+                        const message = `<div class="alert alert-info">Tidak ada data pengguna yang ditemukan.</div>`;
+                        errorContainer.innerHTML = message;
+                        return;
+                    }
+
+                    // Loop data JSON dan buat baris tabel
+                    users.forEach(user => {
+                        const role = user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase();
+                        let badgeClass = '';
+                        if (role === 'Admin') {
+                            badgeClass = 'badge-admin';
+                        } else if (role === 'Student') {
+                            badgeClass = 'badge-mahasiswa';
+                        } else {
+                            badgeClass = 'badge-dosen';
+                        }
+
+                        // Buat baris tabel dengan badge yang sesuai
+                        const row = `<tr>
+                                        <td>${user.id}</td>
+                                        <td>${user.nama}</td>
+                                        <td>${user.email}</td>
+                                        <td><span class="badge rounded-pill ${badgeClass}">${role}</span></td>
+                                    </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    // --- Tahap Gagal (Error) ---
+                    const errorMessage = `<div class="alert alert-danger">
+                                            <strong>Terjadi Kesalahan!</strong> Tidak dapat mengambil data dari API. Silakan coba lagi nanti.
+                                            <br><small>${error.message}</small>
+                                          </div>`;
+                    errorContainer.innerHTML = errorMessage;
+                    console.error('Error fetching API:', error);
+                })
+                .finally(() => {
+                    // --- Tahap Akhir (selalu dijalankan) ---
+                    // 1. Sembunyikan spinner
+                    spinner.classList.add('d-none');
+                    
+                    // 2. Aktifkan kembali tombol
+                    fetchBtn.disabled = false;
+                    fetchBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Ambil Data Pengguna';
+                });
+        });
+    });
+    </script>
+</th:block>
+
+</html>

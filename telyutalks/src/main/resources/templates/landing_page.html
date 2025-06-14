@@ -98,8 +98,11 @@
                 <div class="question-author">
                     <i class="bi bi-person-circle author-icon"></i>
                     <span class="author-name" th:text="${question.author.nama}"></span>
-                    <span th:if="${question.author?.role == 'Student'}" class="badge rounded-pill badge-mahasiswa ms-2">Mahasiswa</span>
-                    <span th:if="${question.author?.role == 'Lecturer'}" class="badge rounded-pill badge-dosen ms-2">Dosen</span>
+                    <span class="badge rounded-pill ms-2"
+                        th:if="${question.author?.role != null}"
+                        th:classappend="${question.author.role == 'Admin' ? 'badge-admin' : (question.author.role == 'Student' ? 'badge-mahasiswa' : 'badge-dosen')}"
+                        th:text="${question.author.role}">
+                    </span>
                     <span class="time" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></span>
                 </div>
                 <p class="question-content" th:text="${#strings.abbreviate(question.content, 250)}"></p>

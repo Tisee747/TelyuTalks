@@ -1,4 +1,3 @@
-// SALIN DAN GANTI SELURUH ISI FILE AdminController.java DENGAN KODE DI BAWAH INI
 
 package com.telyutalks.telyutalks.controller;
 
@@ -107,6 +106,7 @@ public class AdminController {
 
     @PostMapping("/questions/delete/{id}")
     public String deleteQuestion(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        reportRepository.deleteByPostIdAndPostType(id, Report.PostType.QUESTION);
         questionRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Question and all its answers have been deleted.");
         return "redirect:/admin/posts";
@@ -117,6 +117,7 @@ public class AdminController {
         Answer answer = answerRepository.findById(id).orElse(null);
         if (answer != null) {
             Long questionId = answer.getQuestion().getId();
+            reportRepository.deleteByPostIdAndPostType(id, Report.PostType.ANSWER);
             answerRepository.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Answer has been deleted.");
             

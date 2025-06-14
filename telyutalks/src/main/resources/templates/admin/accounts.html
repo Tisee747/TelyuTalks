@@ -21,7 +21,7 @@
                         <td th:text="${user.id}"></td>
                         <td th:text="${user.nama}"></td>
                         <td th:text="${user.email}"></td>
-                        <td><span th:text="${user.getRole()}" th:classappend="${user.getRole() == 'Admin' ? 'badge bg-danger' : (user.getRole() == 'Student' ? 'badge bg-primary' : 'badge bg-success')}"></span></td>
+                        <td><span th:text="${user.getRole()}" class="badge rounded-pill" th:classappend="${user.getRole() == 'Admin' ? 'badge-admin' : (user.getRole() == 'Student' ? 'badge-mahasiswa' : 'badge-dosen')}"></span></td>
                         <td class="text-end">
                             <a th:href="@{/admin/profile/{id}(id=${user.id})}" class="btn btn-sm btn-info">View Profile</a>
                             <form th:if="${user.getRole() != 'Admin'}" th:action="@{/admin/accounts/delete/{id}(id=${user.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure?');"><button type="submit" class="btn btn-sm btn-danger">Delete</button></form>

@@ -89,8 +89,11 @@
                         <div>
                             <span class="author-name" th:if="${question.author}" th:text="${question.author.nama}">Nama Penanya</span>
                             <span class="author-name" th:unless="${question.author}">[Pengguna Dihapus]</span>
-                            <span th:if="${question.author?.role == 'Student'}" class="badge rounded-pill badge-mahasiswa ms-2">Mahasiswa</span>
-                            <span th:if="${question.author?.role == 'Lecturer'}" class="badge rounded-pill badge-dosen ms-2">Dosen</span>
+                            <span class="badge rounded-pill ms-2"
+                                th:if="${question.author?.role != null}"
+                                th:classappend="${question.author.role == 'Admin' ? 'badge-admin' : (question.author.role == 'Student' ? 'badge-mahasiswa' : 'badge-dosen')}"
+                                th:text="${question.author.role}">
+                            </span>
                             <small class="time" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(question.createdAt)}"></small>
                         </div>
                     </div>
@@ -112,8 +115,11 @@
                              <div>
                                  <strong class="author-name" th:if="${answer.author}" th:text="${answer.author.nama}"></strong>
                                  <strong class="author-name" th:unless="${answer.author}">[Pengguna Dihapus]</strong>
-                                 <span th:if="${answer.author?.role == 'Student'}" class="badge rounded-pill badge-mahasiswa ms-2">Mahasiswa</span>
-                                 <span th:if="${answer.author?.role == 'Lecturer'}" class="badge rounded-pill badge-dosen ms-2">Dosen</span>
+                                 <span class="badge rounded-pill ms-2"
+                                    th:if="${answer.author?.role != null}"
+                                    th:classappend="${answer.author.role == 'Admin' ? 'badge-admin' : (answer.author.role == 'Student' ? 'badge-mahasiswa' : 'badge-dosen')}"
+                                    th:text="${answer.author.role}">
+                                 </span>
                                  <small class="time" th:text="'• ' + ${T(com.telyutalks.telyutalks.util.TimeUtil).getTimeAgo(answer.createdAt)}"></small>
                              </div>
                         </div>

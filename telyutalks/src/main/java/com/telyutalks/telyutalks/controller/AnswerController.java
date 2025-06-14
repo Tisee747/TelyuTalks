@@ -17,12 +17,15 @@ import com.telyutalks.telyutalks.model.User;
 import com.telyutalks.telyutalks.repository.AnswerRepository;
 import com.telyutalks.telyutalks.repository.QuestionRepository;
 import com.telyutalks.telyutalks.repository.UserRepository;
+import com.telyutalks.telyutalks.repository.ReportRepository;
+import com.telyutalks.telyutalks.model.Report;
 
 @Controller
 public class AnswerController {
     @Autowired private AnswerRepository answerRepository;
     @Autowired private QuestionRepository questionRepository;
     @Autowired private UserRepository userRepository;
+    @Autowired private ReportRepository reportRepository;
 
     @PostMapping("/question/{questionId}/answers")
     public String processAddAnswer(@PathVariable Long questionId, @RequestParam String content, @AuthenticationPrincipal UserDetails userDetails) {
@@ -50,6 +53,7 @@ public class AnswerController {
     public String deleteAnswer(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         Answer answer = answerRepository.findById(id).orElseThrow(() -> new RuntimeException("Answer not found"));
         Long questionId = answer.getQuestion().getId();
+        reportRepository.deleteByPostIdAndPostType(id, Report.PostType.ANSWER);
         answerRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Your answer has been deleted.");
         return "redirect:/question/" + questionId;

@@ -13,7 +13,7 @@
             <p class="card-text">
                 <strong>ID:</strong> <span th:text="${user.id}"></span><br>
                 <strong>Email:</strong> <span th:text="${user.email}"></span><br>
-                <strong>Role:</strong> <span th:text="${user.getRole()}" th:classappend="${user.getRole() == 'Admin' ? 'badge bg-danger' : (user.getRole() == 'Student' ? 'badge bg-primary' : 'badge bg-success')}"></span>
+                <strong>Role:</strong> <span th:text="${user.getRole()}" class="badge rounded-pill" th:classappend="${user.getRole() == 'Admin' ? 'badge-admin' : (user.getRole() == 'Student' ? 'badge-mahasiswa' : 'badge-dosen')}"></span>
             </p>
             </div>
     </div>

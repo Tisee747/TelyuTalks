@@ -1,116 +1,130 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/layout_admin :: layout(pageTitle='Dashboard', content=~{::content})}">
-<body>
-    <th:block th:fragment="content">
-        <h1 class="mb-4">Dashboard</h1>
-        <div class="row">
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card shadow h-100 py-2 card-square">
-                    <div class="card-body card-body-centered">
-                        <div class="text-center">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Mahasiswa</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${studentCount}">0</div>
+
+<th:block th:fragment="content">
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-telyu-red border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-telyu-red text-uppercase mb-1">Total Mahasiswa</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800" th:text="${studentCount}">0</div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card shadow h-100 py-2 card-square">
-                    <div class="card-body card-body-centered">
-                        <div class="text-center">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Dosen</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${lecturerCount}">0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card shadow h-100 py-2 card-square">
-                    <div class="card-body card-body-centered">
-                        <div class="text-center">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Postingan</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${questionCount} + ${answerCount}">0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card shadow h-100 py-2 card-square">
-                    <div class="card-body card-body-centered">
-                        <div class="text-center">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Total Laporan</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${reportCount}">0</div>
+                        <div class="col-auto">
+                            <i class="bi bi-people-fill fs-2 text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card shadow">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-bold text-primary">Statistik Konten</h6>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-telyu-black border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-telyu-black text-uppercase mb-1">Total Dosen</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800" th:text="${lecturerCount}">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-person-video3 fs-2 text-gray-300"></i>
+                        </div>
                     </div>
-                    <div class="card-body">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-telyu-secondary border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-telyu-secondary text-uppercase mb-1">Total Postingan</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800" th:text="${questionCount} + ${answerCount}">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-file-earmark-text-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-telyu-red border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs fw-bold text-telyu-red text-uppercase mb-1">Total Laporan</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800" th:text="${reportCount}">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-flag-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Statistik Konten</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height:40vh; width:80vw">
                         <canvas id="myBarChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script th:inline="javascript">
-            /*<![CDATA[*/
-
-            document.addEventListener('DOMContentLoaded', (event) => {
-                
-                const studentCount = /*[[${studentCount}]]*/ 0;
-                const lecturerCount = /*[[${lecturerCount}]]*/ 0;
-                const postCount = /*[[${questionCount} + ${answerCount}]]*/ 0;
-                const reportCount = /*[[${reportCount}]]*/ 0;
-                
-                const ctx = document.getElementById('myBarChart');
-                if (ctx) { 
-                    new Chart(ctx, {
-                        type: 'bar', 
-                        data: {
-                            labels: ['Mahasiswa', 'Dosen', 'Postingan', 'Laporan'],
-                            datasets: [{
-                                label: 'Jumlah',
-                                data: [studentCount, lecturerCount, postCount, reportCount],
-                                backgroundColor: [
-                                    'rgba(54, 162, 235, 0.6)',
-                                    'rgba(75, 192, 192, 0.6)',
-                                    'rgba(255, 206, 86, 0.6)',
-                                    'rgba(255, 99, 132, 0.6)'
-                                ],
-                                borderColor: [
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(255, 99, 132, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            },
-                            plugins: {
-                                legend: {
-                                    display: false
-                                }
-                            }
-                        }
-                    });
+    <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const studentCount = /*[[${studentCount}]]*/ 0;
+        const lecturerCount = /*[[${lecturerCount}]]*/ 0;
+        const questionCount = /*[[${questionCount}]]*/ 0;
+        const answerCount = /*[[${answerCount}]]*/ 0;
+        const reportCount = /*[[${reportCount}]]*/ 0;
+        
+        const ctx = document.getElementById('myBarChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mahasiswa', 'Dosen', 'Pertanyaan', 'Jawaban', 'Laporan'],
+                    datasets: [{
+                        label: 'Jumlah',
+                        data: [studentCount, lecturerCount, questionCount, answerCount, reportCount],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                            'rgba(255, 99, 132, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } },
+                    plugins: { legend: { display: false } }
                 }
             });
-
-            /*]]>*/
-        </script>
-    </th:block>
-</body>
-</html>
+        }
+    });
+    </script>
+</th:block>

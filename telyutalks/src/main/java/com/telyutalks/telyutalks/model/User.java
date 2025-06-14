@@ -2,6 +2,8 @@ package com.telyutalks.telyutalks.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -14,11 +16,10 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 @Entity
-@Table(name = "users") // Both Student and Lecturer will be stored in this single table
+@Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING) // This column will store 'STUDENT' or 'LECTURER'
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 public abstract class User {
 
     @Id
@@ -40,9 +41,11 @@ public abstract class User {
     @Column(nullable = false)
     private String fakultas;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
 
@@ -70,4 +73,5 @@ public abstract class User {
         if (this instanceof Lecturer) return "Lecturer";
         return "Unknown";
     }
+    
 }

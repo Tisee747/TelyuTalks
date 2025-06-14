@@ -7,7 +7,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle} + ' - TelyuTalks'">TelyuTalks</title>
-    <link rel="manifest" href="/manifest.json">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -169,6 +168,13 @@
         /* =================================
            CUSTOM ROLE BADGES
            ================================= */
+
+        .badge-admin {
+            background-color: var(--telyu-black);
+            color: var(--telyu-white);
+            border: 1px solid var(--telyu-black);
+        }
+
         .badge-dosen {
             background-color: var(--telyu-red);
             color: var(--telyu-white);
@@ -241,6 +247,7 @@
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" th:href="@{/profile}">Profil Saya</a></li>
                     <li><a class="dropdown-item" th:href="@{/ask}">Tanya Pertanyaan</a></li>
+                    <li><a class="dropdown-item" th:href="@{/api-demo}">API User</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form th:action="@{/logout}" method="post" class="d-inline">
@@ -263,12 +270,5 @@
     </footer>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { 
-                navigator.serviceWorker.register('/service-worker.js'); 
-            });
-        }
-    </script>
 </body>
 </html>

@@ -47,4 +47,9 @@ public class HomeController {
         
         return "search_result"; 
     }
+
+    @GetMapping("/api-demo")
+    public String showApiDemoPage() {
+        return "api_demo";
+    }
 }
