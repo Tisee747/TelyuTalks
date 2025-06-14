@@ -20,7 +20,7 @@ public class WebSecurityConfig {
     @Order(1)
     public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/admin/**") // Hanya berlaku untuk URL yang diawali /admin/
+            .securityMatcher("/admin/**")
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/service-worker.js", "/manifest.json", "/icons/**").permitAll()
                 .requestMatchers("/admin/login  ").permitAll() 
@@ -43,7 +43,6 @@ public class WebSecurityConfig {
     @Order(2)
     public SecurityFilterChain userFilterChain(HttpSecurity http) throws Exception {
         http
-            // Menambahkan header untuk memaksa browser tidak melakukan caching.
             .headers(headers -> headers
                 .cacheControl(cache -> cache.disable())
             )
@@ -65,7 +64,6 @@ public class WebSecurityConfig {
             )
             .logout(logout -> logout
                 .logoutSuccessUrl("/login?logout")
-                // Baris yang menyebabkan error telah dihapus untuk sementara
                 .permitAll()
             );
 
