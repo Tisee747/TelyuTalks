@@ -52,17 +52,13 @@
         const errorContainer = document.getElementById('error-alert-container');
 
         fetchBtn.addEventListener('click', function() {
-            // --- Tahap Persiapan ---
-            // 1. Nonaktifkan tombol untuk mencegah klik ganda
             fetchBtn.disabled = true;
             fetchBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Memuat...';
             
-            // 2. Bersihkan hasil sebelumnya dan tampilkan spinner
             tableBody.innerHTML = '';
             errorContainer.innerHTML = '';
             spinner.classList.remove('d-none');
 
-            // --- Tahap Pemanggilan API ---
             fetch('/api/users')
                 .then(response => {
                     if (!response.ok) {
@@ -71,15 +67,12 @@
                     return response.json();
                 })
                 .then(users => {
-                    // --- Tahap Sukses ---
-                    // Cek jika data yang diterima kosong
                     if (users.length === 0) {
                         const message = `<div class="alert alert-info">Tidak ada data pengguna yang ditemukan.</div>`;
                         errorContainer.innerHTML = message;
                         return;
                     }
 
-                    // Loop data JSON dan buat baris tabel
                     users.forEach(user => {
                         const role = user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase();
                         let badgeClass = '';
@@ -91,7 +84,6 @@
                             badgeClass = 'badge-dosen';
                         }
 
-                        // Buat baris tabel dengan badge yang sesuai
                         const row = `<tr>
                                         <td>${user.id}</td>
                                         <td>${user.nama}</td>
@@ -102,7 +94,6 @@
                     });
                 })
                 .catch(error => {
-                    // --- Tahap Gagal (Error) ---
                     const errorMessage = `<div class="alert alert-danger">
                                             <strong>Terjadi Kesalahan!</strong> Tidak dapat mengambil data dari API. Silakan coba lagi nanti.
                                             <br><small>${error.message}</small>
@@ -111,11 +102,8 @@
                     console.error('Error fetching API:', error);
                 })
                 .finally(() => {
-                    // --- Tahap Akhir (selalu dijalankan) ---
-                    // 1. Sembunyikan spinner
                     spinner.classList.add('d-none');
                     
-                    // 2. Aktifkan kembali tombol
                     fetchBtn.disabled = false;
                     fetchBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Ambil Data Pengguna';
                 });

@@ -36,7 +36,7 @@ public class Report {
     private PostType postType;
 
     @Column(nullable = false)
-    private Long postId; // ID dari Question atau Answer yang dilaporkan
+    private Long postId;
 
     @Lob
     @Column(columnDefinition="TEXT")
@@ -52,7 +52,6 @@ public class Report {
     @Enumerated(EnumType.STRING)
     private ReportStatus status = ReportStatus.PENDING;
 
-    // Getters Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public PostType getPostType() { return postType; }

@@ -16,7 +16,6 @@
                         <input type="text" id="nama" name="nama" class="form-control" th:value="${user.nama}" required>
                     </div>
 
-                    <!-- Field Khusus Mahasiswa -->
                     <th:block th:if="${user?.getRole() == 'Student'}">
                         <div class="col-md-6">
                             <label for="studentFakultas" class="form-label">Fakultas</label>
@@ -38,7 +37,6 @@
                         </div>
                     </th:block>
 
-                    <!-- Field Khusus Dosen -->
                     <th:block th:if="${user?.getRole() == 'Lecturer'}">
                         <div class="col-md-6">
                             <label for="nidn" class="form-label">NIDN/NIDK</label>

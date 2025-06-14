@@ -57,7 +57,7 @@ public class ProfileController {
         model.addAttribute("user", currentUser);
         model.addAttribute("questions", userQuestions);
         model.addAttribute("answers", userAnswers);
-        model.addAttribute("activeView", view); // Mengirim tab mana yang aktif
+        model.addAttribute("activeView", view);
 
         return "profile";
     }
@@ -66,7 +66,7 @@ public class ProfileController {
     public String showEditProfileForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
         model.addAttribute("user", currentUser);
-        model.addAttribute("prodiData", getProdiData()); // Kirim data fakultas & prodi
+        model.addAttribute("prodiData", getProdiData());
         return "edit_profile";
     }
 

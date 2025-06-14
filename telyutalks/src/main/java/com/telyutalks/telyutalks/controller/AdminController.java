@@ -1,4 +1,3 @@
-
 package com.telyutalks.telyutalks.controller;
 
 import java.util.List;
@@ -133,7 +132,7 @@ public class AdminController {
     public String showReportsMenu(Model model) {
         model.addAttribute("questionReportCount", reportRepository.countByPostType(Report.PostType.QUESTION));
         model.addAttribute("answerReportCount", reportRepository.countByPostType(Report.PostType.ANSWER));
-        model.addAttribute("activePage", "reports"); // Ditambahkan
+        model.addAttribute("activePage", "reports");
         return "admin/reports_menu";
     }
     @GetMapping("/reports/view/{reportId}")

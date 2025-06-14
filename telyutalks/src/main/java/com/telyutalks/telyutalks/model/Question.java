@@ -36,7 +36,6 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
 
-    //GETTERS SETTERS
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -47,6 +46,5 @@ public class Question {
     public User getAuthor() { return author; }
     public void setAuthor(User author) { this.author = author; }
     public List<Answer> getAnswers() { return answers; }
-    public void setAnswers(List<Answer> answers) { this.answers = answers; }
-    
+    public void setAnswers(List<Answer> answers) { this.answers = answers; }    
 }

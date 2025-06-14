@@ -30,8 +30,6 @@ public class Answer {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
-
-    // GETTERS SETTERS
     
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -43,5 +41,4 @@ public class Answer {
     public void setAuthor(User author) { this.author = author; }
     public Question getQuestion() { return question; }
     public void setQuestion(Question question) { this.question = question; }
-    
 }

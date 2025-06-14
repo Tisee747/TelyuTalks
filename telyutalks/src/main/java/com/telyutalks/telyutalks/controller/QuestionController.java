@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.telyutalks.telyutalks.model.Question;
+import com.telyutalks.telyutalks.model.Report;
 import com.telyutalks.telyutalks.model.User;
 import com.telyutalks.telyutalks.repository.QuestionRepository;
-import com.telyutalks.telyutalks.repository.UserRepository;
 import com.telyutalks.telyutalks.repository.ReportRepository;
-import com.telyutalks.telyutalks.model.Report;
+import com.telyutalks.telyutalks.repository.UserRepository;
 
 @Controller
 public class QuestionController {
@@ -51,7 +51,6 @@ public class QuestionController {
         Question question = questionRepository.findByIdWithAnswers(id)
                 .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
         
-        // Sekarang kita bisa dengan aman mengirim entity Question ke template
         model.addAttribute("question", question);
         
         return "question_detail";

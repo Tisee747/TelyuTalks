@@ -26,14 +26,12 @@
             color: var(--telyu-white) !important;
         }
 
-        /* Untuk kondisi hover (saat kursor di atas tombol) */
         .btn-primary:hover, .btn-danger:hover, .btn-info:hover, .btn-success:hover, 
         .btn-warning:hover, .btn-secondary:hover, .btn-dark:hover {
-            background-color: #811e1a; /* Warna merah yang sedikit lebih gelap untuk hover */
+            background-color: #811e1a;
             border-color: #811e1a;
         }
 
-        /* Khusus untuk tombol outline (yang hanya garis) */
         .btn-outline-info, .btn-outline-danger, .btn-outline-secondary {
             color: var(--telyu-red);
             border-color: var(--telyu-red);
@@ -44,7 +42,6 @@
             color: var(--telyu-white);
         }
 
-        /* --- Sidebar --- */
         .sidebar {
             width: var(--sidebar-width);
             background: #ffffff;
@@ -55,7 +52,7 @@
         }
         .sidebar-header {
             display: flex;
-            justify-content: space-between; /* Membuat logo & tombol terpisah */
+            justify-content: space-between;
             align-items: center;
             padding: 1.15rem 1.5rem;
             border-bottom: 1px solid #dee2e6;
@@ -81,7 +78,6 @@
         .text-telyu-secondary { color: #6c757d !important; }
         .border-telyu-secondary { border-color: #6c757d !important; }
         
-        /* --- Page Wrapper & Content --- */
         .page-wrapper {
             margin-left: var(--sidebar-width);
             transition: margin-left 0.2s ease-in-out;
@@ -96,7 +92,6 @@
         }
         .page-content { padding: 1.5rem; }
 
-        /* --- Collapsed State Styles --- */
         body.sidebar-collapsed .sidebar { width: var(--sidebar-width-collapsed); }
         body.sidebar-collapsed .page-wrapper { margin-left: var(--sidebar-width-collapsed); }
         body.sidebar-collapsed .sidebar-header { justify-content: center; }
@@ -111,7 +106,6 @@
         }
         body.sidebar-collapsed .sidebar .nav-link i { margin-right: 0; }
 
-        /* --- Responsive Styles for Mobile --- */
         @media (max-width: 992px) {
             .sidebar { transform: translateX(-100%); width: 280px; }
             .sidebar.show { transform: translateX(0); }
