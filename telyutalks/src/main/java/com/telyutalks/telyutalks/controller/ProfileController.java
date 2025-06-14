@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,12 @@ import com.telyutalks.telyutalks.model.Student;
 import com.telyutalks.telyutalks.model.User;
 import com.telyutalks.telyutalks.repository.AnswerRepository;
 import com.telyutalks.telyutalks.repository.QuestionRepository;
+import com.telyutalks.telyutalks.repository.ReportRepository;
 import com.telyutalks.telyutalks.repository.UserRepository;
+
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ProfileController {
@@ -29,6 +35,7 @@ public class ProfileController {
     @Autowired private UserRepository userRepository;
     @Autowired private QuestionRepository questionRepository;
     @Autowired private AnswerRepository answerRepository;
+    @Autowired private ReportRepository reportRepository;
 
     private Map<String, List<String>> getProdiData() {
         Map<String, List<String>> prodiData = new LinkedHashMap<>();
@@ -98,13 +105,26 @@ public class ProfileController {
     }
 
     @PostMapping("/profile/delete")
-    public String deleteProfile(@AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
-        User userToDelete = userRepository.findByUsername(userDetails.getUsername()).orElse(null);
+    public String deleteProfile(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        String username = request.getUserPrincipal().getName();
+        User userToDelete = userRepository.findByUsername(username).orElse(null);
+
         if (userToDelete != null) {
+            reportRepository.deleteAllByReporter(userToDelete);
+
             userRepository.delete(userToDelete);
-            return "redirect:/logout"; 
+
+            SecurityContextHolder.clearContext();
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+
+            redirectAttributes.addFlashAttribute("successMessage", "Akun Anda telah berhasil dihapus.");
+            return "redirect:/login";
         }
+        
         redirectAttributes.addFlashAttribute("errorMessage", "Could not delete profile.");
-        return "redirect:/";
+        return "redirect:/profile/edit";
     }
 }

@@ -1,10 +1,10 @@
 package com.telyutalks.telyutalks.repository;
 
 import java.util.List;
-
+ 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.transaction.annotation.Transactional; 
+import com.telyutalks.telyutalks.model.User;
 import com.telyutalks.telyutalks.model.Report;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
@@ -14,4 +14,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     @Transactional
     void deleteByPostIdAndPostType(Long postId, Report.PostType postType);
+
+    @Transactional
+    void deleteAllByReporter(User reporter);
 }
